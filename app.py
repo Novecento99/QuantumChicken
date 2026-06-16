@@ -63,7 +63,7 @@ def run_qubit(job_id):
 
         result = job.result()
         counts = dict(result[0].data.meas.get_counts())
-        value = str(counts[list(counts.keys())[0]])
+        value = list(counts.keys())[0]
 
         log(job_id, f"Result received: {value}", "success")
         jobs[job_id]["status"] = "done"

@@ -69,6 +69,6 @@ def main():
     counts = dict(counts)
 
     # print the value of the first key in the counts dict
-    print(counts[list(counts.keys())[0]])
+    print(list(counts.keys())[0])
 
-    return counts[list(counts.keys())[0]]
+    return list(counts.keys())[0]
