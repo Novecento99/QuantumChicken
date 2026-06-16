@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quantum Cat</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:wght@400;700&family=Outfit:wght@400;600&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,7 +13,7 @@
       --pink:   #ff2d78;
       --yellow: #ffd600;
       --blue:   #2979ff;
-      --green:  #00e676;
+      --green:  #00c853;
       --orange: #ff6d00;
       --purple: #d500f9;
     }
@@ -23,62 +23,77 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding: 48px 16px 60px;
+      padding: 40px 16px 60px;
       background: #fffde7;
       background-image:
         radial-gradient(circle at 10% 20%, #ffe0f0 0%, transparent 35%),
         radial-gradient(circle at 90% 10%, #e0f0ff 0%, transparent 35%),
         radial-gradient(circle at 80% 85%, #f3e0ff 0%, transparent 35%),
         radial-gradient(circle at 20% 90%, #e0ffe8 0%, transparent 35%);
-      font-family: 'Fredoka One', system-ui, sans-serif;
+      font-family: 'Outfit', system-ui, sans-serif;
       color: #1a1a1a;
     }
 
-    /* confetti bits */
-    .confetti-wrap {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-    }
-    .dot {
-      position: absolute;
-      border-radius: 50%;
-      animation: fall linear infinite;
-      opacity: 0.55;
-    }
+    /* confetti */
+    .confetti-wrap { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .dot { position: absolute; border-radius: 50%; animation: fall linear infinite; opacity: 0.45; }
     @keyframes fall {
       from { transform: translateY(-8vh) rotate(0deg); }
       to   { transform: translateY(110vh) rotate(720deg); }
     }
 
+    /* layout */
+    .page { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 20px; width: 580px; }
+
+    /* explainer banner */
+    .explainer {
+      background: #fff;
+      border: 2.5px solid #1a1a1a;
+      border-radius: 20px;
+      padding: 18px 22px;
+      box-shadow: 4px 4px 0 var(--blue);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .explainer-icon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+
+    .explainer-title {
+      font-family: 'Fredoka One', sans-serif;
+      font-size: 1.05rem;
+      color: var(--blue);
+      margin-bottom: 4px;
+    }
+    .explainer-body {
+      font-size: 0.85rem;
+      color: #444;
+      line-height: 1.55;
+    }
+    .explainer-body strong { color: #1a1a1a; }
+
+    /* main card */
     .card {
-      position: relative;
-      z-index: 1;
-      background: #ffffff;
-      border-radius: 32px;
-      padding: 40px 48px 44px;
-      width: 560px;
+      background: #fff;
+      border-radius: 28px;
+      padding: 36px 44px 40px;
       border: 3px solid #1a1a1a;
-      box-shadow:
-        6px 6px 0 #1a1a1a,
-        12px 12px 0 var(--pink),
-        18px 18px 0 var(--yellow);
+      box-shadow: 6px 6px 0 #1a1a1a, 12px 12px 0 var(--pink), 18px 18px 0 var(--yellow);
+      position: relative;
+    }
+
+    .sticker { position: absolute; font-size: 1.8rem; animation: wiggle 3s ease-in-out infinite; user-select: none; }
+    .sticker-1 { top: -16px; right: 28px; animation-delay: 0s; }
+    .sticker-2 { top: -14px; left: 36px; animation-delay: 0.7s; }
+    @keyframes wiggle {
+      0%,100% { transform: rotate(-8deg) scale(1); }
+      50%      { transform: rotate(8deg) scale(1.12); }
     }
 
     /* cat */
-    .cat-face {
-      text-align: center;
-      margin-bottom: 16px;
-    }
-    .cat-svg {
-      width: 96px;
-      height: 96px;
-      filter: drop-shadow(3px 3px 0px #1a1a1a);
-    }
-    .eye  { animation: blink 3.5s ease-in-out infinite; transform-origin: center; }
-    .eye-r{ animation: blink 3.5s ease-in-out infinite 0.1s; transform-origin: center; }
+    .cat-face { text-align: center; margin-bottom: 14px; }
+    .cat-svg { width: 88px; height: 88px; filter: drop-shadow(3px 3px 0 #1a1a1a); }
+    .eye   { animation: blink 3.8s ease-in-out infinite; transform-origin: center; }
+    .eye-r { animation: blink 3.8s ease-in-out infinite 0.1s; transform-origin: center; }
     @keyframes blink {
       0%,90%,100% { transform: scaleY(1); }
       95% { transform: scaleY(0.08); }
@@ -86,118 +101,228 @@
 
     h1 {
       font-family: 'Fredoka One', sans-serif;
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       text-align: center;
       margin-bottom: 4px;
-      letter-spacing: 0.03em;
       background: linear-gradient(90deg, var(--pink), var(--purple), var(--blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      -webkit-text-stroke: 0px transparent;
-      paint-order: stroke fill;
     }
-
     .subtitle {
       font-family: 'Space Mono', monospace;
-      font-size: 0.72rem;
-      color: #888;
+      font-size: 0.68rem;
+      color: #aaa;
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       letter-spacing: 0.05em;
     }
 
-    .btn-row { display: flex; justify-content: center; }
-
+    .btn-row { display: flex; justify-content: center; margin-bottom: 4px; }
     button {
       font-family: 'Fredoka One', sans-serif;
-      font-size: 1.2rem;
-      letter-spacing: 0.05em;
+      font-size: 1.15rem;
+      letter-spacing: 0.04em;
       color: #1a1a1a;
       background: var(--yellow);
       border: 3px solid #1a1a1a;
       border-radius: 50px;
-      padding: 14px 44px;
+      padding: 13px 44px;
       cursor: pointer;
-      position: relative;
       transition: transform 0.1s, box-shadow 0.1s;
       box-shadow: 4px 4px 0 #1a1a1a;
     }
     button::before { content: '🐾 '; }
-    button:hover:not(:disabled) {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 #1a1a1a;
-    }
-    button:active:not(:disabled) {
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0 #1a1a1a;
-    }
-    button:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: 4px 4px 0 #ccc; }
+    button:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #1a1a1a; }
+    button:active:not(:disabled){ transform: translate(2px,2px);   box-shadow: 2px 2px 0 #1a1a1a; }
+    button:disabled { opacity: 0.38; cursor: not-allowed; box-shadow: 4px 4px 0 #ccc; }
 
-    /* log panel */
-    .log-panel {
+    /* ── STEP TRACKER ── */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-top: 28px;
+      padding: 0 4px;
+      display: none;
+    }
+    .steps.visible { display: flex; }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      position: relative;
+    }
+
+    .step-bubble {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      border: 2.5px solid #ddd;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.35s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-align: center;
+      color: #bbb;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: color 0.3s;
+      max-width: 58px;
+    }
+
+    /* connector line between steps */
+    .step-connector {
+      flex: 0 0 20px;
+      height: 2.5px;
+      background: #ddd;
+      margin-bottom: 22px;
+      border-radius: 2px;
+      transition: background 0.4s;
+    }
+
+    /* active step */
+    .step.active .step-bubble {
+      border-color: var(--blue);
+      background: #e8f0ff;
+      box-shadow: 0 0 0 4px rgba(41,121,255,0.15);
+      animation: pulse-step 1.2s ease-in-out infinite;
+    }
+    .step.active .step-label { color: var(--blue); }
+
+    @keyframes pulse-step {
+      0%,100% { box-shadow: 0 0 0 4px rgba(41,121,255,0.15); }
+      50%      { box-shadow: 0 0 0 8px rgba(41,121,255,0.08); }
+    }
+
+    /* done step */
+    .step.done .step-bubble {
+      border-color: var(--green);
+      background: #e8fff0;
+      animation: none;
+      box-shadow: none;
+    }
+    .step.done .step-label { color: var(--green); }
+    .step-connector.done { background: var(--green); }
+
+    /* step tooltip */
+    .step-tip {
+      position: absolute;
+      top: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 0.68rem;
+      border-radius: 8px;
+      padding: 5px 9px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 10;
+    }
+    .step:hover .step-tip { opacity: 1; }
+
+    /* ── LIVE STATUS BAR ── */
+    .status-bar {
+      margin-top: 18px;
+      background: #fff8e1;
+      border: 2px solid #ffd600;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 0.82rem;
+      color: #555;
+      font-family: 'Outfit', sans-serif;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+    .status-bar.visible { display: flex; }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--yellow);
+      flex-shrink: 0;
+      animation: blink-dot 1s ease-in-out infinite;
+    }
+    @keyframes blink-dot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.4; transform: scale(0.7); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; }
+    }
+
+    /* ── LOG PANEL ── */
+    .log-panel {
+      margin-top: 16px;
       background: #fafafa;
-      border: 2px solid #1a1a1a;
-      border-radius: 16px;
-      padding: 14px 16px;
-      max-height: 180px;
+      border: 2px solid #e0e0e0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      max-height: 170px;
       overflow-y: auto;
       display: none;
       scroll-behavior: smooth;
       font-family: 'Space Mono', monospace;
     }
-    .log-panel::-webkit-scrollbar { width: 5px; }
-    .log-panel::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 4px; }
+    .log-panel::-webkit-scrollbar { width: 4px; }
     .log-panel::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 4px; }
     .log-panel.visible { display: block; }
 
     .log-entry {
       display: grid;
-      grid-template-columns: 64px 1fr;
+      grid-template-columns: 60px 1fr;
       gap: 8px;
       padding: 5px 0;
-      border-bottom: 1px dashed #e0e0e0;
-      font-size: 0.75rem;
+      border-bottom: 1px dashed #eee;
+      font-size: 0.72rem;
       line-height: 1.5;
-      animation: popIn 0.2s cubic-bezier(.34,1.56,.64,1);
+      animation: popIn 0.22s cubic-bezier(.34,1.56,.64,1);
     }
     .log-entry:last-child { border-bottom: none; }
-
     @keyframes popIn {
-      from { opacity: 0; transform: scale(0.95) translateY(4px); }
+      from { opacity: 0; transform: scale(0.96) translateY(3px); }
       to   { opacity: 1; transform: scale(1) translateY(0); }
     }
+    .log-time { color: #ccc; padding-top: 1px; user-select: none; }
+    .log-msg  { color: #666; }
+    .log-entry.success .log-msg { color: var(--green); font-weight: 700; }
+    .log-entry.error   .log-msg { color: var(--pink);  font-weight: 700; }
 
-    .log-time { color: #bbb; padding-top: 1px; user-select: none; }
-    .log-msg  { color: #555; }
-    .log-entry.success .log-msg { color: #00b248; font-weight: 700; }
-    .log-entry.error   .log-msg { color: var(--pink); font-weight: 700; }
-
-    /* typing dots */
-    .typing { display: flex; gap: 5px; padding: 8px 0 2px; align-items: center; }
-    .typing span {
-      width: 7px; height: 7px; border-radius: 50%;
-      animation: tdot 0.9s ease-in-out infinite;
-    }
-    .typing span:nth-child(1) { background: var(--pink);   animation-delay: 0s; }
-    .typing span:nth-child(2) { background: var(--yellow); animation-delay: 0.15s; }
-    .typing span:nth-child(3) { background: var(--blue);   animation-delay: 0.3s; }
+    .typing { display: flex; gap: 5px; padding: 6px 0 2px; align-items: center; }
+    .typing span { width: 6px; height: 6px; border-radius: 50%; animation: tdot 0.9s ease-in-out infinite; }
+    .typing span:nth-child(1){ background: var(--pink);   animation-delay: 0s; }
+    .typing span:nth-child(2){ background: var(--yellow); animation-delay: 0.15s; }
+    .typing span:nth-child(3){ background: var(--blue);   animation-delay: 0.3s; }
     @keyframes tdot {
       0%,80%,100% { transform: translateY(0); }
-      40% { transform: translateY(-7px); }
+      40% { transform: translateY(-6px); }
     }
 
-    /* result banner */
+    /* ── RESULT ── */
     .result-banner {
-      margin-top: 24px;
+      margin-top: 20px;
       border-radius: 20px;
-      padding: 24px 20px 20px;
+      padding: 22px 20px 18px;
       text-align: center;
       display: none;
       border: 3px solid #1a1a1a;
-      position: relative;
-      overflow: hidden;
     }
     .result-banner.done {
       display: block;
@@ -212,52 +337,39 @@
 
     .result-label {
       font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: #aaa;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
-
     .result-value {
       font-family: 'Fredoka One', sans-serif;
-      font-size: 6rem;
+      font-size: 5.5rem;
       line-height: 1;
       background: linear-gradient(135deg, var(--pink), var(--orange), var(--yellow));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.12));
+      filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.1));
     }
-
     .result-quip {
-      margin-top: 8px;
-      font-size: 1.05rem;
-      color: #444;
-      letter-spacing: 0.02em;
+      margin-top: 6px;
+      font-size: 1rem;
+      color: #555;
     }
-
+    .result-explain {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: #aaa;
+      font-family: 'Space Mono', monospace;
+      line-height: 1.6;
+    }
     .error-value {
       font-family: 'Space Mono', monospace;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--pink);
       word-break: break-word;
-    }
-
-    /* badge stickers on card */
-    .sticker {
-      position: absolute;
-      font-size: 1.8rem;
-      animation: wiggle 3s ease-in-out infinite;
-      user-select: none;
-    }
-    .sticker-1 { top: -18px; right: 24px; animation-delay: 0s; }
-    .sticker-2 { top: -14px; left: 32px; animation-delay: 0.6s; }
-    .sticker-3 { bottom: -16px; right: 40px; animation-delay: 1.2s; }
-
-    @keyframes wiggle {
-      0%,100% { transform: rotate(-8deg) scale(1); }
-      50%      { transform: rotate(8deg) scale(1.12); }
     }
   </style>
 </head>
@@ -265,94 +377,150 @@
 
   <div class="confetti-wrap" id="confetti"></div>
 
-  <div class="card">
-    <span class="sticker sticker-1">⚛️</span>
-    <span class="sticker sticker-2">✨</span>
-    <span class="sticker sticker-3">🌟</span>
+  <div class="page">
 
-    <!-- cat SVG -->
-    <div class="cat-face">
-      <svg class="cat-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- ears -->
-        <polygon points="18,44 8,16 36,32" fill="#ff2d78"/>
-        <polygon points="82,44 92,16 64,32" fill="#ff2d78"/>
-        <polygon points="20,42 12,22 34,33" fill="#ffb3cc"/>
-        <polygon points="80,42 88,22 66,33" fill="#ffb3cc"/>
-        <!-- head -->
-        <ellipse cx="50" cy="57" rx="37" ry="33" fill="#fff0f5"/>
-        <ellipse cx="50" cy="57" rx="37" ry="33" fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
-        <!-- eyes -->
-        <g class="eye" style="transform-origin:37px 52px">
-          <ellipse cx="37" cy="52" rx="9" ry="10" fill="#2979ff"/>
-          <ellipse cx="37" cy="52" rx="5" ry="8"  fill="#1a1a1a"/>
-          <circle  cx="39" cy="48" r="2"           fill="white"/>
-        </g>
-        <g class="eye-r" style="transform-origin:63px 52px">
-          <ellipse cx="63" cy="52" rx="9" ry="10" fill="#2979ff"/>
-          <ellipse cx="63" cy="52" rx="5" ry="8"  fill="#1a1a1a"/>
-          <circle  cx="65" cy="48" r="2"           fill="white"/>
-        </g>
-        <!-- nose -->
-        <polygon points="50,63 47,67 53,67" fill="#ff2d78"/>
-        <!-- mouth -->
-        <path d="M47 67 Q44 71 41 69" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <path d="M53 67 Q56 71 59 69" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- blush -->
-        <ellipse cx="28" cy="66" rx="7" ry="4" fill="#ffb3cc" opacity="0.7"/>
-        <ellipse cx="72" cy="66" rx="7" ry="4" fill="#ffb3cc" opacity="0.7"/>
-        <!-- whiskers -->
-        <line x1="8"  y1="60" x2="40" y2="63" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
-        <line x1="8"  y1="66" x2="40" y2="65" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
-        <line x1="92" y1="60" x2="60" y2="63" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
-        <line x1="92" y1="66" x2="60" y2="65" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
-      </svg>
+    <!-- explainer banner -->
+    <div class="explainer">
+      <div class="explainer-icon">🤔</div>
+      <div class="explainer-text">
+        <div class="explainer-title">What is this?</div>
+        <div class="explainer-body">
+          A <strong>qubit</strong> is like a coin spinning in the air — it's <strong>both 0 and 1 at the same time</strong> (superposition).
+          The moment you look at it, it randomly picks one. That's quantum measurement.<br>
+          We run this experiment on a <strong>real IBM quantum computer</strong> — not a simulation.
+          Nobody can predict the result, not even the laws of classical physics.
+        </div>
+      </div>
     </div>
 
-    <h1>QUANTUM CAT</h1>
-    <p class="subtitle">Schrödinger's qubit — real IBM hardware — one shot</p>
+    <!-- main card -->
+    <div class="card">
+      <span class="sticker sticker-1">⚛️</span>
+      <span class="sticker sticker-2">✨</span>
 
-    <div class="btn-row">
-      <button id="runBtn" onclick="runCircuit()">COLLAPSE THE WAVE</button>
-    </div>
+      <div class="cat-face">
+        <svg class="cat-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="18,44 8,16 36,32" fill="#ff2d78"/>
+          <polygon points="82,44 92,16 64,32" fill="#ff2d78"/>
+          <polygon points="20,42 12,22 34,33" fill="#ffb3cc"/>
+          <polygon points="80,42 88,22 66,33" fill="#ffb3cc"/>
+          <ellipse cx="50" cy="57" rx="37" ry="33" fill="#fff0f5"/>
+          <ellipse cx="50" cy="57" rx="37" ry="33" fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
+          <g class="eye" style="transform-origin:37px 52px">
+            <ellipse cx="37" cy="52" rx="9" ry="10" fill="#2979ff"/>
+            <ellipse cx="37" cy="52" rx="5" ry="8"  fill="#1a1a1a"/>
+            <circle  cx="39" cy="48" r="2" fill="white"/>
+          </g>
+          <g class="eye-r" style="transform-origin:63px 52px">
+            <ellipse cx="63" cy="52" rx="9" ry="10" fill="#2979ff"/>
+            <ellipse cx="63" cy="52" rx="5" ry="8"  fill="#1a1a1a"/>
+            <circle  cx="65" cy="48" r="2" fill="white"/>
+          </g>
+          <polygon points="50,63 47,67 53,67" fill="#ff2d78"/>
+          <path d="M47 67 Q44 71 41 69" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M53 67 Q56 71 59 69" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <ellipse cx="28" cy="66" rx="7" ry="4" fill="#ffb3cc" opacity="0.7"/>
+          <ellipse cx="72" cy="66" rx="7" ry="4" fill="#ffb3cc" opacity="0.7"/>
+          <line x1="8"  y1="60" x2="40" y2="63" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
+          <line x1="8"  y1="66" x2="40" y2="65" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
+          <line x1="92" y1="60" x2="60" y2="63" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
+          <line x1="92" y1="66" x2="60" y2="65" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
+        </svg>
+      </div>
 
-    <div class="log-panel" id="logPanel"></div>
+      <h1>QUANTUM CAT</h1>
+      <p class="subtitle">Schrödinger's qubit — real IBM hardware — one shot</p>
 
-    <div class="result-banner" id="resultBanner">
-      <div class="result-label" id="resultLabel"></div>
-      <div id="resultValue"></div>
-      <div class="result-quip" id="resultQuip"></div>
-    </div>
-  </div>
+      <div class="btn-row">
+        <button id="runBtn" onclick="runCircuit()">COLLAPSE THE WAVE</button>
+      </div>
+
+      <!-- step tracker -->
+      <div class="steps" id="steps">
+
+        <div class="step" id="step-1">
+          <div class="step-bubble">🔑</div>
+          <div class="step-label">Connect</div>
+          <div class="step-tip">Log into IBM Quantum</div>
+        </div>
+        <div class="step-connector" id="conn-1"></div>
+
+        <div class="step" id="step-2">
+          <div class="step-bubble">🖥️</div>
+          <div class="step-label">Find chip</div>
+          <div class="step-tip">Pick a real quantum processor</div>
+        </div>
+        <div class="step-connector" id="conn-2"></div>
+
+        <div class="step" id="step-3">
+          <div class="step-bubble">⚛️</div>
+          <div class="step-label">Superpose</div>
+          <div class="step-tip">Put the qubit in superposition</div>
+        </div>
+        <div class="step-connector" id="conn-3"></div>
+
+        <div class="step" id="step-4">
+          <div class="step-bubble">🚀</div>
+          <div class="step-label">Run</div>
+          <div class="step-tip">Execute on real hardware</div>
+        </div>
+        <div class="step-connector" id="conn-4"></div>
+
+        <div class="step" id="step-5">
+          <div class="step-bubble">🎯</div>
+          <div class="step-label">Measure</div>
+          <div class="step-tip">Collapse the superposition</div>
+        </div>
+
+      </div>
+
+      <!-- live status bar -->
+      <div class="status-bar" id="statusBar">
+        <div class="status-dot"></div>
+        <span id="statusText">Starting…</span>
+      </div>
+
+      <!-- detail log -->
+      <div class="log-panel" id="logPanel"></div>
+
+      <!-- result -->
+      <div class="result-banner" id="resultBanner">
+        <div class="result-label" id="resultLabel"></div>
+        <div id="resultValue"></div>
+        <div class="result-quip" id="resultQuip"></div>
+        <div class="result-explain" id="resultExplain"></div>
+      </div>
+
+    </div><!-- /card -->
+  </div><!-- /page -->
 
   <script>
-    // confetti dots
+    // confetti
     const colors = ['#ff2d78','#ffd600','#2979ff','#00e676','#d500f9','#ff6d00'];
     const wrap = document.getElementById('confetti');
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 28; i++) {
       const d = document.createElement('div');
       d.className = 'dot';
       const size = 6 + Math.random() * 10;
       d.style.cssText = `
-        width:${size}px; height:${size}px;
+        width:${size}px;height:${size}px;
         left:${Math.random()*100}vw;
         background:${colors[Math.floor(Math.random()*colors.length)]};
-        animation-duration:${8 + Math.random()*16}s;
+        animation-duration:${8+Math.random()*16}s;
         animation-delay:${-Math.random()*20}s;
         border-radius:${Math.random()>0.4?'50%':'4px'};
       `;
       wrap.appendChild(d);
     }
 
-    let pollInterval = null;
-    let renderedCount = 0;
-    let typingEl = null;
-
-    const logPanel    = document.getElementById('logPanel');
-    const resultBanner = document.getElementById('resultBanner');
-    const resultLabel  = document.getElementById('resultLabel');
-    const resultValue  = document.getElementById('resultValue');
-    const resultQuip   = document.getElementById('resultQuip');
-    const runBtn       = document.getElementById('runBtn');
+    const STEP_STATUS = [
+      null,
+      "Logging into IBM Quantum…",
+      "Searching for a live quantum chip…",
+      "Building the superposition experiment…",
+      "Running on real quantum hardware…",
+      "Reading the quantum measurement…",
+    ];
 
     const quips = {
       '0': [
@@ -367,16 +535,59 @@
       ],
     };
 
+    const explains = {
+      '0': "The qubit collapsed to 0. With a perfect Hadamard gate the odds are 50/50 — pure quantum randomness decided this.",
+      '1': "The qubit collapsed to 1. With a perfect Hadamard gate the odds are 50/50 — pure quantum randomness decided this.",
+    };
+
+    let pollInterval  = null;
+    let renderedCount = 0;
+    let typingEl      = null;
+    let currentStep   = 0;
+
+    const logPanel     = document.getElementById('logPanel');
+    const resultBanner = document.getElementById('resultBanner');
+    const resultLabel  = document.getElementById('resultLabel');
+    const resultValue  = document.getElementById('resultValue');
+    const resultQuip   = document.getElementById('resultQuip');
+    const resultExplain= document.getElementById('resultExplain');
+    const runBtn       = document.getElementById('runBtn');
+    const stepsEl      = document.getElementById('steps');
+    const statusBar    = document.getElementById('statusBar');
+    const statusText   = document.getElementById('statusText');
+
+    function setStep(n) {
+      if (n <= currentStep) return;
+      // mark previous steps done
+      for (let i = currentStep; i < n; i++) {
+        const s = document.getElementById('step-' + i);
+        if (s) { s.classList.remove('active'); s.classList.add('done'); s.querySelector('.step-bubble').textContent = '✓'; }
+        const c = document.getElementById('conn-' + i);
+        if (c) c.classList.add('done');
+      }
+      currentStep = n;
+      const el = document.getElementById('step-' + n);
+      if (el) { el.classList.remove('done'); el.classList.add('active'); }
+      if (STEP_STATUS[n]) statusText.textContent = STEP_STATUS[n];
+    }
+
     function reset() {
       renderedCount = 0;
-      typingEl = null;
+      currentStep   = 0;
+      typingEl      = null;
       logPanel.innerHTML = '';
       logPanel.classList.remove('visible');
+      stepsEl.classList.remove('visible');
+      statusBar.classList.remove('visible');
       resultBanner.className = 'result-banner';
-      resultLabel.textContent = '';
-      resultValue.className = '';
-      resultValue.textContent = '';
-      resultQuip.textContent = '';
+      resultLabel.textContent = resultValue.className = resultValue.textContent = '';
+      resultQuip.textContent = resultExplain.textContent = '';
+      for (let i = 1; i <= 5; i++) {
+        const s = document.getElementById('step-' + i);
+        if (s) { s.className = 'step'; const b = s.querySelector('.step-bubble'); b.textContent = ['🔑','🖥️','⚛️','🚀','🎯'][i-1]; }
+        const c = document.getElementById('conn-' + i);
+        if (c) c.classList.remove('done');
+      }
     }
 
     function addTyping() {
@@ -387,7 +598,6 @@
       logPanel.scrollTop = logPanel.scrollHeight;
       typingEl = d;
     }
-
     function removeTyping() {
       if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
       typingEl = null;
@@ -397,21 +607,20 @@
       removeTyping();
       const row = document.createElement('div');
       row.className = 'log-entry' + (entry.kind !== 'info' ? ' ' + entry.kind : '');
-      const t = document.createElement('span');
-      t.className = 'log-time';
-      t.textContent = entry.time;
-      const m = document.createElement('span');
-      m.className = 'log-msg';
-      m.textContent = entry.msg;
-      row.appendChild(t);
-      row.appendChild(m);
+      const t = document.createElement('span'); t.className = 'log-time'; t.textContent = entry.time;
+      const m = document.createElement('span'); m.className = 'log-msg';  m.textContent = entry.msg;
+      row.appendChild(t); row.appendChild(m);
       logPanel.appendChild(row);
       addTyping();
       logPanel.scrollTop = logPanel.scrollHeight;
     }
 
     function renderLogs(logs) {
-      for (let i = renderedCount; i < logs.length; i++) appendLog(logs[i]);
+      for (let i = renderedCount; i < logs.length; i++) {
+        const e = logs[i];
+        if (e.step) setStep(e.step);
+        appendLog(e);
+      }
       renderedCount = logs.length;
     }
 
@@ -419,6 +628,8 @@
       if (pollInterval) clearInterval(pollInterval);
       reset();
       runBtn.disabled = true;
+      stepsEl.classList.add('visible');
+      statusBar.classList.add('visible');
       logPanel.classList.add('visible');
       addTyping();
 
@@ -444,16 +655,21 @@
             clearInterval(pollInterval);
             removeTyping();
             runBtn.disabled = false;
+            statusBar.classList.remove('visible');
+            // complete all steps
+            for (let i = currentStep; i <= 5; i++) setStep(i);
             resultBanner.classList.add('done');
             resultLabel.textContent = 'the qubit collapsed to';
             resultValue.className = 'result-value';
             resultValue.textContent = data.result;
             const pool = quips[data.result] || ['meow.'];
             resultQuip.textContent = pool[Math.floor(Math.random() * pool.length)];
+            resultExplain.textContent = explains[data.result] || '';
           } else if (data.status === 'error') {
             clearInterval(pollInterval);
             removeTyping();
             runBtn.disabled = false;
+            statusBar.classList.remove('visible');
             resultBanner.classList.add('error-state');
             resultLabel.textContent = 'something went wrong :(';
             resultValue.className = 'error-value';
@@ -468,9 +684,7 @@
       }, 1500);
     }
 
-    function now() {
-      return new Date().toTimeString().slice(0, 8);
-    }
+    function now() { return new Date().toTimeString().slice(0, 8); }
   </script>
 </body>
 </html>
