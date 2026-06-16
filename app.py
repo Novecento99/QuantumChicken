@@ -40,7 +40,9 @@ def run_qubit(job_id):
         log(job_id, "Connected.", "success")
 
         log(job_id, "Searching for the least-busy real backend (≥127 qubits)…")
-        backend = service.least_busy(operational=True, simulator=False, min_num_qubits=127)
+        backend = service.least_busy(
+            operational=True, simulator=False, min_num_qubits=127
+        )
         log(job_id, f"Backend selected: {backend.name}", "success")
 
         log(job_id, "Building single-qubit Hadamard circuit…")
@@ -96,4 +98,4 @@ def status(job_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", port=5000)
