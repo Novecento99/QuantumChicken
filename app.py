@@ -27,7 +27,6 @@ def run_qubit(job_id):
         from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
         from qiskit_ibm_runtime import SamplerV2 as Sampler, QiskitRuntimeService
 
-        log(job_id, "Saving IBM Quantum account credentials…")
         QiskitRuntimeService.save_account(
             channel="ibm_quantum_platform",
             token=os.environ["IBM_QUANTUM_TOKEN"],
