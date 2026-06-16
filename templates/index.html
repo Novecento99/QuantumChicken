@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum Runner</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a1a;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #e0e0ff;
+    }
+
+    .card {
+      background: #10102a;
+      border: 1px solid #2a2a6a;
+      border-radius: 16px;
+      padding: 40px 48px;
+      width: 540px;
+      box-shadow: 0 0 60px rgba(80, 80, 255, 0.1);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+      color: #a0a0ff;
+      text-align: center;
+    }
+
+    .subtitle {
+      font-size: 0.82rem;
+      color: #5050aa;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    button {
+      background: linear-gradient(135deg, #3a3aff, #7a3aff);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 40px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    button:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    button:active:not(:disabled) { transform: translateY(0); }
+    button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* log panel */
+    .log-panel {
+      margin-top: 28px;
+      background: #07071a;
+      border: 1px solid #1e1e50;
+      border-radius: 10px;
+      padding: 16px;
+      max-height: 280px;
+      overflow-y: auto;
+      display: none;
+      scroll-behavior: smooth;
+    }
+
+    .log-panel.visible { display: block; }
+
+    .log-entry {
+      display: grid;
+      grid-template-columns: 62px 1fr;
+      gap: 8px;
+      padding: 5px 0;
+      border-bottom: 1px solid #12123a;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .log-entry:last-child { border-bottom: none; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+
+    .log-time {
+      color: #40407a;
+      font-variant-numeric: tabular-nums;
+      padding-top: 1px;
+      user-select: none;
+    }
+
+    .log-msg { color: #9090cc; }
+    .log-entry.success .log-msg { color: #70e090; }
+    .log-entry.error   .log-msg { color: #ff6060; }
+
+    /* result banner */
+    .result-banner {
+      margin-top: 20px;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      display: none;
+    }
+
+    .result-banner.done {
+      display: block;
+      background: rgba(100, 255, 140, 0.06);
+      border: 1px solid rgba(100, 255, 140, 0.2);
+    }
+
+    .result-banner.error-state {
+      display: block;
+      background: rgba(255, 80, 80, 0.06);
+      border: 1px solid rgba(255, 80, 80, 0.2);
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #5050aa;
+      margin-bottom: 6px;
+    }
+
+    .result-value {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: #a0ffb0;
+      letter-spacing: 0.12em;
+    }
+
+    .error-value {
+      font-size: 0.8rem;
+      color: #ff7070;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Quantum Circuit Runner</h1>
+    <p class="subtitle">Single-qubit Hadamard circuit on IBM Quantum</p>
+
+    <div class="btn-row">
+      <button id="runBtn" onclick="runCircuit()">Run Circuit</button>
+    </div>
+
+    <div class="log-panel" id="logPanel"></div>
+
+    <div class="result-banner" id="resultBanner">
+      <div class="result-label" id="resultLabel"></div>
+      <div id="resultValue"></div>
+    </div>
+  </div>
+
+  <script>
+    let pollInterval = null;
+    let renderedCount = 0;
+
+    const logPanel   = document.getElementById('logPanel');
+    const resultBanner = document.getElementById('resultBanner');
+    const resultLabel  = document.getElementById('resultLabel');
+    const resultValue  = document.getElementById('resultValue');
+    const runBtn       = document.getElementById('runBtn');
+
+    function reset() {
+      renderedCount = 0;
+      logPanel.innerHTML = '';
+      logPanel.classList.remove('visible');
+      resultBanner.className = 'result-banner';
+      resultLabel.textContent = '';
+      resultValue.className = '';
+      resultValue.textContent = '';
+    }
+
+    function appendLog(entry) {
+      const row = document.createElement('div');
+      row.className = 'log-entry' + (entry.kind !== 'info' ? ' ' + entry.kind : '');
+
+      const t = document.createElement('span');
+      t.className = 'log-time';
+      t.textContent = entry.time;
+
+      const m = document.createElement('span');
+      m.className = 'log-msg';
+      m.textContent = entry.msg;
+
+      row.appendChild(t);
+      row.appendChild(m);
+      logPanel.appendChild(row);
+      logPanel.scrollTop = logPanel.scrollHeight;
+    }
+
+    function renderLogs(logs) {
+      for (let i = renderedCount; i < logs.length; i++) {
+        appendLog(logs[i]);
+      }
+      renderedCount = logs.length;
+    }
+
+    async function runCircuit() {
+      if (pollInterval) clearInterval(pollInterval);
+      reset();
+      runBtn.disabled = true;
+      logPanel.classList.add('visible');
+
+      let jobId;
+      try {
+        const res = await fetch('/run', { method: 'POST' });
+        const data = await res.json();
+        jobId = data.job_id;
+      } catch (e) {
+        appendLog({ time: now(), msg: 'Failed to reach the server: ' + e.message, kind: 'error' });
+        runBtn.disabled = false;
+        return;
+      }
+
+      pollInterval = setInterval(async () => {
+        try {
+          const res = await fetch('/status/' + jobId);
+          const data = await res.json();
+
+          renderLogs(data.logs || []);
+
+          if (data.status === 'done') {
+            clearInterval(pollInterval);
+            runBtn.disabled = false;
+            resultBanner.classList.add('done');
+            resultLabel.textContent = 'Measurement result';
+            resultValue.className = 'result-value';
+            resultValue.textContent = data.result;
+          } else if (data.status === 'error') {
+            clearInterval(pollInterval);
+            runBtn.disabled = false;
+            resultBanner.classList.add('error-state');
+            resultLabel.textContent = 'Error';
+            resultValue.className = 'error-value';
+            resultValue.textContent = data.result;
+          }
+        } catch (e) {
+          clearInterval(pollInterval);
+          appendLog({ time: now(), msg: 'Lost connection to server.', kind: 'error' });
+          runBtn.disabled = false;
+        }
+      }, 1500);
+    }
+
+    function now() {
+      return new Date().toTimeString().slice(0, 8);
+    }
+  </script>
+</body>
+</html>
