@@ -30,8 +30,8 @@ def run_qubit(job_id):
         from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
         from qiskit_ibm_runtime import SamplerV2 as Sampler, QiskitRuntimeService
 
-        # Step 1 — connect
-        log(job_id, "Logging into IBM Quantum cloud…", step=1)
+        # Step 1 — connessione
+        log(job_id, "Accesso a IBM Quantum in corso…", step=1)
         QiskitRuntimeService.save_account(
             channel="ibm_quantum_platform",
             token=os.environ["IBM_QUANTUM_TOKEN"],
@@ -39,77 +39,36 @@ def run_qubit(job_id):
             set_as_default=True,
         )
         service = QiskitRuntimeService()
-        log(
-            job_id,
-            "Connected! We're talking to real IBM quantum computers.",
-            "success",
-            step=1,
-        )
+        log(job_id, "Connessi! Stiamo parlando con i veri computer quantistici IBM.", "success", step=1)
 
-        # Step 2 — find a chip
-        log(
-            job_id,
-            "Scanning for the least-busy real quantum processor…",
-            step=2,
-        )
-        backend = service.least_busy(
-            operational=True, simulator=False, min_num_qubits=1
-        )
-        log(
-            job_id,
-            f"Found one! We'll run on '{backend.name}' — a real quantum chip, not a simulator.",
-            "success",
-            step=2,
-        )
+        # Step 2 — trova un chip
+        log(job_id, "Cercando il processore quantistico meno occupato…", step=2)
+        backend = service.least_busy(operational=True, simulator=False, min_num_qubits=1)
+        log(job_id, f"Trovato! Useremo '{backend.name}' — hardware reale, non un simulatore.", "success", step=2)
 
-        # Step 3 — build the experiment
-        log(
-            job_id,
-            "Building the experiment: applying a Hadamard gate to put 1 qubit into superposition…",
-            step=3,
-        )
+        # Step 3 — costruisci il circuito
+        log(job_id, "Costruzione del circuito: il qubit viene messo in sovrapposizione con un gate di Hadamard…", step=3)
         circuit = QuantumCircuit(1)
         circuit.h(0)
         circuit.measure_all()
-        log(
-            job_id,
-            "The qubit is now both 0 AND 1 at the same time. Like a coin spinning in the air.",
-            step=3,
-        )
-        log(
-            job_id,
-            "Translating the circuit into the native language of this specific chip…",
-            step=3,
-        )
+        log(job_id, "Il qubit è ora 0 E 1 allo stesso tempo. Come una moneta che gira in aria.", step=3)
+        log(job_id, "Traduzione del circuito nel linguaggio nativo del chip…", step=3)
         pm = generate_preset_pass_manager(backend=backend, optimization_level=1)
         isa_circuit = pm.run(circuit)
-        log(job_id, "Experiment ready to fire!", "success", step=3)
+        log(job_id, "Circuito pronto. Pronti a sparare!", "success", step=3)
 
-        # Step 4 — run on hardware
-        log(
-            job_id,
-            f"Sending the experiment to '{backend.name}'. Joining the queue on real quantum hardware…",
-            step=4,
-        )
+        # Step 4 — esegui sull'hardware
+        log(job_id, f"Invio dell'esperimento a '{backend.name}'. Entrata nella coda…", step=4)
         sampler = Sampler(mode=backend)
         job = sampler.run([isa_circuit], shots=1)
-        log(
-            job_id,
-            f"Queued! Job ID: {job.job_id()} — waiting for our turn on the chip…",
-            step=4,
-        )
+        log(job_id, f"In coda! Job ID: {job.job_id()} — aspettando il nostro turno sul chip…", step=4)
 
-        # Step 5 — read result
+        # Step 5 — leggi il risultato
         result = job.result()
         counts = dict(result[0].data.meas.get_counts())
         value = list(counts.keys())[0]
 
-        log(
-            job_id,
-            f"The qubit was observed and collapsed to: {value}  — the superposition is gone.",
-            "success",
-            step=5,
-        )
+        log(job_id, f"Il qubit è collassato a {value}. La sovrapposizione è finita. L'universo si è diviso.", "success", step=5)
         jobs[job_id]["status"] = "done"
         jobs[job_id]["result"] = value
 

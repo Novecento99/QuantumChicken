@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quantum Cat</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spacca l'Universo</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:wght@400;700&family=Outfit:wght@400;600&display=swap');
 
@@ -20,671 +20,598 @@
 
     body {
       min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 40px 16px 60px;
-      background: #fffde7;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 44px 16px 72px;
+      background: #f8f6ff;
       background-image:
-        radial-gradient(circle at 10% 20%, #ffe0f0 0%, transparent 35%),
-        radial-gradient(circle at 90% 10%, #e0f0ff 0%, transparent 35%),
-        radial-gradient(circle at 80% 85%, #f3e0ff 0%, transparent 35%),
-        radial-gradient(circle at 20% 90%, #e0ffe8 0%, transparent 35%);
-      font-family: 'Outfit', system-ui, sans-serif;
+        radial-gradient(circle at  8% 15%, #ffe0f0 0%, transparent 30%),
+        radial-gradient(circle at 92%  8%, #dceeff 0%, transparent 30%),
+        radial-gradient(circle at 88% 90%, #f0e0ff 0%, transparent 30%),
+        radial-gradient(circle at 10% 88%, #d8ffed 0%, transparent 30%);
+      font-family: 'Outfit', sans-serif;
       color: #1a1a1a;
     }
 
     /* confetti */
-    .confetti-wrap { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
-    .dot { position: absolute; border-radius: 50%; animation: fall linear infinite; opacity: 0.45; }
+    .bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .dot { position: absolute; animation: fall linear infinite; }
     @keyframes fall {
-      from { transform: translateY(-8vh) rotate(0deg); }
-      to   { transform: translateY(110vh) rotate(720deg); }
+      from { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+      8%   { opacity: .4; }
+      92%  { opacity: .4; }
+      to   { transform: translateY(110vh) rotate(720deg); opacity: 0; }
     }
 
-    /* layout */
-    .page { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 20px; width: 580px; }
-
-    /* explainer banner */
-    .explainer {
-      background: #fff;
-      border: 2.5px solid #1a1a1a;
-      border-radius: 20px;
-      padding: 18px 22px;
-      box-shadow: 4px 4px 0 var(--blue);
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
+    .page {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; gap: 20px;
+      width: min(620px, 100%);
     }
-    .explainer-icon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
 
-    .explainer-title {
+    /* ── PITCH CARD ── */
+    .pitch {
+      background: #fff; border: 2.5px solid #1a1a1a;
+      border-radius: 22px; padding: 22px 28px;
+      box-shadow: 5px 5px 0 var(--blue);
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+    .pitch-icon {
+      font-size: 2.6rem; line-height: 1; flex-shrink: 0;
+    }
+    .pitch-title {
       font-family: 'Fredoka One', sans-serif;
-      font-size: 1.05rem;
-      color: var(--blue);
-      margin-bottom: 4px;
+      font-size: 1.1rem; color: var(--blue); margin-bottom: 7px;
     }
-    .explainer-body {
-      font-size: 0.85rem;
-      color: #444;
-      line-height: 1.55;
-    }
-    .explainer-body strong { color: #1a1a1a; }
+    .pitch p { font-size: .86rem; color: #444; line-height: 1.65; }
+    .pitch p strong { color: #111; }
 
-    /* main card */
+    /* ── MAIN CARD ── */
     .card {
-      background: #fff;
-      border-radius: 28px;
-      padding: 36px 44px 40px;
-      border: 3px solid #1a1a1a;
-      box-shadow: 6px 6px 0 #1a1a1a, 12px 12px 0 var(--pink), 18px 18px 0 var(--yellow);
+      background: #fff; border: 3px solid #1a1a1a;
+      border-radius: 28px; padding: 40px 44px 44px;
+      box-shadow: 7px 7px 0 #1a1a1a, 14px 14px 0 var(--pink), 21px 21px 0 var(--yellow);
       position: relative;
     }
 
-    .sticker { position: absolute; font-size: 1.8rem; animation: wiggle 3s ease-in-out infinite; user-select: none; }
-    .sticker-1 { top: -16px; right: 28px; animation-delay: 0s; }
-    .sticker-2 { top: -14px; left: 36px; animation-delay: 0.7s; }
-    @keyframes wiggle {
+    /* floating stickers on card corners */
+    .stk {
+      position: absolute; font-size: 1.7rem;
+      animation: jiggle 3.5s ease-in-out infinite; user-select: none;
+    }
+    .sk1 { top:-16px; right:32px; }
+    .sk2 { top:-14px; left:38px; animation-delay:.9s; }
+    .sk3 { bottom:-15px; left:50px; animation-delay:1.7s; }
+    @keyframes jiggle {
       0%,100% { transform: rotate(-8deg) scale(1); }
-      50%      { transform: rotate(8deg) scale(1.12); }
+      50%      { transform: rotate(8deg) scale(1.13); }
     }
 
-    /* cat */
-    .cat-face { text-align: center; margin-bottom: 14px; }
-    .cat-svg { width: 88px; height: 88px; filter: drop-shadow(3px 3px 0 #1a1a1a); }
-    .eye   { animation: blink 3.8s ease-in-out infinite; transform-origin: center; }
-    .eye-r { animation: blink 3.8s ease-in-out infinite 0.1s; transform-origin: center; }
-    @keyframes blink {
-      0%,90%,100% { transform: scaleY(1); }
-      95% { transform: scaleY(0.08); }
+    /* ── QUBIT ORB ── */
+    .orb-wrap {
+      display: flex; justify-content: center; margin-bottom: 20px;
+    }
+    .orb-svg { width: 110px; height: 110px; }
+
+    /* ring animations */
+    .ring1 { animation: spin1 4s linear infinite; transform-origin: 55px 55px; }
+    .ring2 { animation: spin2 6s linear infinite; transform-origin: 55px 55px; }
+    .ring3 { animation: spin3 3s linear infinite; transform-origin: 55px 55px; }
+    @keyframes spin1 { to { transform: rotate(360deg); } }
+    @keyframes spin2 { to { transform: rotate(-360deg); } }
+    @keyframes spin3 { to { transform: rotate(360deg); } }
+
+    .orb-core { animation: orb-pulse 2.2s ease-in-out infinite; transform-origin: 55px 55px; }
+    @keyframes orb-pulse {
+      0%,100% { filter: drop-shadow(0 0 6px rgba(41,121,255,.35)); }
+      50%      { filter: drop-shadow(0 0 18px rgba(41,121,255,.7)); }
     }
 
+    /* ── TITLES ── */
     h1 {
       font-family: 'Fredoka One', sans-serif;
-      font-size: 2.2rem;
-      text-align: center;
-      margin-bottom: 4px;
+      font-size: 2.4rem; text-align: center; margin-bottom: 4px;
       background: linear-gradient(90deg, var(--pink), var(--purple), var(--blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-    .subtitle {
+    .sub {
       font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
-      color: #aaa;
-      text-align: center;
-      margin-bottom: 28px;
-      letter-spacing: 0.05em;
+      font-size: .62rem; color: #bbb; text-align: center;
+      letter-spacing: .07em; margin-bottom: 32px;
     }
 
-    .btn-row { display: flex; justify-content: center; margin-bottom: 4px; }
+    /* ── OPTION INPUTS ── */
+    .options {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; gap: 12px; margin-bottom: 26px;
+    }
+    .opt {
+      border: 2.5px solid #1a1a1a; border-radius: 18px;
+      padding: 14px 16px 12px;
+      display: flex; flex-direction: column; gap: 5px;
+      transition: transform .12s, box-shadow .12s; cursor: text;
+    }
+    .opt:focus-within { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 #1a1a1a; }
+    .opt-a { background: #fff0f5; }
+    .opt-b { background: #f0f4ff; }
+    .opt-tag {
+      font-family: 'Fredoka One', sans-serif;
+      font-size: .8rem; letter-spacing: .04em;
+    }
+    .opt-a .opt-tag { color: var(--pink); }
+    .opt-b .opt-tag { color: var(--blue); }
+    .opt input {
+      border: none; background: transparent;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem; font-weight: 600; color: #1a1a1a;
+      outline: none; width: 100%;
+    }
+    .opt input::placeholder { color: #ccc; font-weight: 400; }
+    .vs-badge {
+      font-family: 'Fredoka One', sans-serif;
+      font-size: 1.05rem; color: #ddd; user-select: none; text-align: center;
+    }
+
+    /* ── BUTTON ── */
+    .btn-row { display: flex; justify-content: center; }
     button {
       font-family: 'Fredoka One', sans-serif;
-      font-size: 1.15rem;
-      letter-spacing: 0.04em;
-      color: #1a1a1a;
-      background: var(--yellow);
-      border: 3px solid #1a1a1a;
-      border-radius: 50px;
-      padding: 13px 44px;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
+      font-size: 1.18rem; letter-spacing: .04em;
+      color: #1a1a1a; background: var(--yellow);
+      border: 3px solid #1a1a1a; border-radius: 50px;
+      padding: 14px 48px; cursor: pointer;
+      transition: transform .1s, box-shadow .1s;
       box-shadow: 4px 4px 0 #1a1a1a;
     }
-    button::before { content: '🐾 '; }
     button:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #1a1a1a; }
     button:active:not(:disabled){ transform: translate(2px,2px);   box-shadow: 2px 2px 0 #1a1a1a; }
-    button:disabled { opacity: 0.38; cursor: not-allowed; box-shadow: 4px 4px 0 #ccc; }
+    button:disabled { opacity: .35; cursor: not-allowed; box-shadow: 4px 4px 0 #ccc; }
 
     /* ── STEP TRACKER ── */
-    .steps {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 28px;
-      padding: 0 4px;
-      display: none;
+    .steps { display: none; align-items: center; margin-top: 28px; }
+    .steps.on { display: flex; }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+    .step-bub {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 2.5px solid #e8e8e8; background: #f7f7f7;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.05rem;
+      transition: all .3s cubic-bezier(.34,1.56,.64,1);
     }
-    .steps.visible { display: flex; }
+    .step-lbl {
+      font-size: .58rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .04em; color: #ccc; text-align: center;
+      max-width: 56px; transition: color .3s;
+    }
+    .step-line { flex: 0 0 14px; height: 2.5px; background: #e8e8e8; margin-bottom: 20px; border-radius: 2px; transition: background .4s; }
+    .step.active .step-bub { border-color: var(--blue); background: #e8f0ff; animation: pbub 1.1s ease-in-out infinite; }
+    .step.active .step-lbl { color: var(--blue); }
+    @keyframes pbub {
+      0%,100% { box-shadow: 0 0 0 3px rgba(41,121,255,.2); }
+      50%      { box-shadow: 0 0 0 7px rgba(41,121,255,.07); }
+    }
+    .step.done .step-bub { border-color: var(--green); background: #eafff3; animation: none; box-shadow: none; }
+    .step.done .step-lbl { color: var(--green); }
+    .step-line.done { background: var(--green); }
 
-    .step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      flex: 1;
-      position: relative;
+    /* ── STATUS BAR ── */
+    .sbar {
+      display: none; align-items: center; gap: 10px;
+      margin-top: 14px; padding: 10px 16px;
+      background: #fffde7; border: 2px solid var(--yellow);
+      border-radius: 12px; font-size: .82rem; color: #666;
     }
+    .sbar.on { display: flex; }
+    .sdot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--orange); flex-shrink: 0;
+      animation: sdot 1s ease-in-out infinite;
+    }
+    @keyframes sdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
 
-    .step-bubble {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      border: 2.5px solid #ddd;
-      background: #f5f5f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: all 0.35s cubic-bezier(.34,1.56,.64,1);
-      position: relative;
-      z-index: 1;
-    }
-
-    .step-label {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-align: center;
-      color: #bbb;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      transition: color 0.3s;
-      max-width: 58px;
-    }
-
-    /* connector line between steps */
-    .step-connector {
-      flex: 0 0 20px;
-      height: 2.5px;
-      background: #ddd;
-      margin-bottom: 22px;
-      border-radius: 2px;
-      transition: background 0.4s;
-    }
-
-    /* active step */
-    .step.active .step-bubble {
-      border-color: var(--blue);
-      background: #e8f0ff;
-      box-shadow: 0 0 0 4px rgba(41,121,255,0.15);
-      animation: pulse-step 1.2s ease-in-out infinite;
-    }
-    .step.active .step-label { color: var(--blue); }
-
-    @keyframes pulse-step {
-      0%,100% { box-shadow: 0 0 0 4px rgba(41,121,255,0.15); }
-      50%      { box-shadow: 0 0 0 8px rgba(41,121,255,0.08); }
-    }
-
-    /* done step */
-    .step.done .step-bubble {
-      border-color: var(--green);
-      background: #e8fff0;
-      animation: none;
-      box-shadow: none;
-    }
-    .step.done .step-label { color: var(--green); }
-    .step-connector.done { background: var(--green); }
-
-    /* step tooltip */
-    .step-tip {
-      position: absolute;
-      top: 52px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1a1a1a;
-      color: #fff;
-      font-size: 0.68rem;
-      border-radius: 8px;
-      padding: 5px 9px;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s;
-      z-index: 10;
-    }
-    .step:hover .step-tip { opacity: 1; }
-
-    /* ── LIVE STATUS BAR ── */
-    .status-bar {
-      margin-top: 18px;
-      background: #fff8e1;
-      border: 2px solid #ffd600;
-      border-radius: 12px;
-      padding: 10px 16px;
-      font-size: 0.82rem;
-      color: #555;
-      font-family: 'Outfit', sans-serif;
-      display: none;
-      align-items: center;
-      gap: 10px;
-      animation: fadeIn 0.3s ease;
-    }
-    .status-bar.visible { display: flex; }
-    .status-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--yellow);
-      flex-shrink: 0;
-      animation: blink-dot 1s ease-in-out infinite;
-    }
-    @keyframes blink-dot {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50%      { opacity: 0.4; transform: scale(0.7); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; }
-    }
-
-    /* ── LOG PANEL ── */
-    .log-panel {
-      margin-top: 16px;
-      background: #fafafa;
-      border: 2px solid #e0e0e0;
-      border-radius: 14px;
-      padding: 12px 14px;
-      max-height: 170px;
-      overflow-y: auto;
-      display: none;
-      scroll-behavior: smooth;
+    /* ── LOG ── */
+    .log {
+      display: none; margin-top: 12px;
+      background: #fafafa; border: 2px solid #ebebeb;
+      border-radius: 14px; padding: 12px 14px;
+      max-height: 148px; overflow-y: auto; scroll-behavior: smooth;
       font-family: 'Space Mono', monospace;
     }
-    .log-panel::-webkit-scrollbar { width: 4px; }
-    .log-panel::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 4px; }
-    .log-panel.visible { display: block; }
-
-    .log-entry {
-      display: grid;
-      grid-template-columns: 60px 1fr;
-      gap: 8px;
-      padding: 5px 0;
-      border-bottom: 1px dashed #eee;
-      font-size: 0.72rem;
-      line-height: 1.5;
-      animation: popIn 0.22s cubic-bezier(.34,1.56,.64,1);
+    .log::-webkit-scrollbar { width: 4px; }
+    .log::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 4px; }
+    .log.on { display: block; }
+    .le {
+      display: grid; grid-template-columns: 60px 1fr; gap: 8px;
+      padding: 4px 0; border-bottom: 1px dashed #eee;
+      font-size: .7rem; line-height: 1.5;
+      animation: pop .2s cubic-bezier(.34,1.56,.64,1);
     }
-    .log-entry:last-child { border-bottom: none; }
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.96) translateY(3px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    .log-time { color: #ccc; padding-top: 1px; user-select: none; }
-    .log-msg  { color: #666; }
-    .log-entry.success .log-msg { color: var(--green); font-weight: 700; }
-    .log-entry.error   .log-msg { color: var(--pink);  font-weight: 700; }
-
-    .typing { display: flex; gap: 5px; padding: 6px 0 2px; align-items: center; }
-    .typing span { width: 6px; height: 6px; border-radius: 50%; animation: tdot 0.9s ease-in-out infinite; }
-    .typing span:nth-child(1){ background: var(--pink);   animation-delay: 0s; }
-    .typing span:nth-child(2){ background: var(--yellow); animation-delay: 0.15s; }
-    .typing span:nth-child(3){ background: var(--blue);   animation-delay: 0.3s; }
-    @keyframes tdot {
-      0%,80%,100% { transform: translateY(0); }
-      40% { transform: translateY(-6px); }
-    }
+    .le:last-child { border-bottom: none; }
+    @keyframes pop { from{opacity:0;transform:scale(.96) translateY(3px)} to{opacity:1;transform:none} }
+    .lt { color: #ccc; user-select: none; }
+    .lm { color: #777; }
+    .le.success .lm { color: var(--green); font-weight: 700; }
+    .le.error   .lm { color: var(--pink);  font-weight: 700; }
+    .typing { display: flex; gap: 4px; padding: 6px 0 2px; align-items: center; }
+    .typing span { width: 6px; height: 6px; border-radius: 50%; animation: tb .9s ease-in-out infinite; }
+    .typing span:nth-child(1){ background:var(--pink);   animation-delay:0s; }
+    .typing span:nth-child(2){ background:var(--yellow); animation-delay:.15s; }
+    .typing span:nth-child(3){ background:var(--blue);   animation-delay:.3s; }
+    @keyframes tb { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
 
     /* ── RESULT ── */
-    .result-banner {
-      margin-top: 20px;
-      border-radius: 20px;
-      padding: 22px 20px 18px;
-      text-align: center;
-      display: none;
-      border: 3px solid #1a1a1a;
+    .result { display: none; margin-top: 28px; animation: pop .4s cubic-bezier(.34,1.56,.64,1); }
+    .result.on { display: block; }
+
+    .split-header {
+      text-align: center; margin-bottom: 16px;
     }
-    .result-banner.done {
-      display: block;
-      background: linear-gradient(135deg, #fffde7, #e8f5e9);
-      box-shadow: 5px 5px 0 #1a1a1a;
+    .split-title {
+      font-family: 'Fredoka One', sans-serif;
+      font-size: 1.25rem; color: #1a1a1a; margin-bottom: 4px;
     }
-    .result-banner.error-state {
-      display: block;
-      background: #fff0f3;
-      box-shadow: 5px 5px 0 var(--pink);
+    .split-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: .62rem; color: #bbb; letter-spacing: .06em;
     }
 
-    .result-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: #aaa;
-      margin-bottom: 4px;
+    /* fork SVG */
+    .fork-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
+    .fork-svg { width: 120px; height: 56px; }
+
+    /* universe cards */
+    .universes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .uni {
+      border-radius: 22px; padding: 22px 18px 18px;
+      text-align: center; border: 3px solid #1a1a1a;
+      position: relative; overflow: hidden;
     }
-    .result-value {
+    .uni.here {
+      background: linear-gradient(145deg, #fff9e0, #ffe0f0);
+      box-shadow: 5px 5px 0 #1a1a1a;
+    }
+    .uni.there {
+      background: #f6f6f6; border-color: #d0d0d0;
+      box-shadow: 3px 3px 0 #d0d0d0; opacity: .7;
+    }
+
+    .uni-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: .58rem; text-transform: uppercase;
+      letter-spacing: .13em; margin-bottom: 10px;
+    }
+    .here  .uni-tag { color: var(--pink); }
+    .there .uni-tag { color: #aaa; }
+
+    .uni-qubit {
+      font-family: 'Space Mono', monospace;
+      font-size: .72rem; font-weight: 700;
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; margin-bottom: 10px;
+    }
+    .here  .uni-qubit { background: #1a1a1a; color: var(--yellow); }
+    .there .uni-qubit { background: #e8e8e8; color: #999; }
+
+    .uni-name {
       font-family: 'Fredoka One', sans-serif;
-      font-size: 5.5rem;
-      line-height: 1;
+      font-size: 1.75rem; line-height: 1.2;
+      word-break: break-word; margin-bottom: 8px;
+    }
+    .here  .uni-name {
       background: linear-gradient(135deg, var(--pink), var(--orange), var(--yellow));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.1));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(2px 2px 0 rgba(0,0,0,.07));
     }
-    .result-quip {
-      margin-top: 6px;
-      font-size: 1rem;
-      color: #555;
-    }
-    .result-explain {
-      margin-top: 10px;
-      font-size: 0.75rem;
-      color: #aaa;
+    .there .uni-name { color: #bbb; }
+
+    .uni-desc { font-size: .75rem; color: #999; font-style: italic; line-height: 1.4; }
+    .here .uni-desc { color: #666; }
+
+    /* bottom note */
+    .qubit-note {
       font-family: 'Space Mono', monospace;
-      line-height: 1.6;
+      font-size: .6rem; text-align: center;
+      color: #ccc; margin-top: 12px; letter-spacing: .05em;
     }
-    .error-value {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--pink);
-      word-break: break-word;
+
+    /* ── ERROR ── */
+    .err {
+      display: none; margin-top: 18px;
+      background: #fff0f3; border: 3px solid var(--pink);
+      border-radius: 16px; padding: 16px 18px;
+      font-family: 'Space Mono', monospace; font-size: .72rem;
+      color: var(--pink); word-break: break-word;
+      box-shadow: 4px 4px 0 var(--pink);
     }
+    .err.on { display: block; }
   </style>
 </head>
 <body>
 
-  <div class="confetti-wrap" id="confetti"></div>
+<div class="bg" id="bg"></div>
 
-  <div class="page">
+<div class="page">
 
-    <!-- explainer banner -->
-    <div class="explainer">
-      <div class="explainer-icon">🤔</div>
-      <div class="explainer-text">
-        <div class="explainer-title">What is this?</div>
-        <div class="explainer-body">
-          A <strong>qubit</strong> is like a coin spinning in the air — it's <strong>both 0 and 1 at the same time</strong> (superposition).
-          The moment you look at it, it randomly picks one. That's quantum measurement.<br>
-          We run this experiment on a <strong>real IBM quantum computer</strong> — not a simulation.
-          Nobody can predict the result, not even the laws of classical physics.
-        </div>
+  <!-- pitch -->
+  <div class="pitch">
+    <div class="pitch-icon">🌌</div>
+    <div>
+      <div class="pitch-title">Sei indeciso tra A e B? Fai entrambi.</div>
+      <p>
+        Ogni volta che misuri un <strong>qubit</strong>, l'universo si divide in due.
+        In uno ottieni 0, nell'altro 1 — e non c'è niente che possa prevederlo in anticipo,
+        nemmeno la fisica classica. Scrivi le tue due opzioni, premi il bottone,
+        e lascia che un <strong>vero computer quantistico IBM</strong> decida il tuo destino.
+        La versione di te nell'<strong>universo parallelo</strong> farà l'altra scelta.
+      </p>
+    </div>
+  </div>
+
+  <!-- main card -->
+  <div class="card">
+    <span class="stk sk1">✦</span>
+    <span class="stk sk2">⚛️</span>
+    <span class="stk sk3">✦</span>
+
+    <!-- qubit orb -->
+    <div class="orb-wrap">
+      <svg class="orb-svg" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- outer glow -->
+        <circle cx="55" cy="55" r="52" fill="none" stroke="#e8f0ff" stroke-width="4"/>
+        <!-- ring 1 — blue horizontal orbit -->
+        <g class="ring1">
+          <ellipse cx="55" cy="55" rx="50" ry="16" fill="none" stroke="#2979ff" stroke-width="1.5" opacity=".45" stroke-dasharray="4 3"/>
+          <circle cx="105" cy="55" r="4.5" fill="#2979ff"/>
+        </g>
+        <!-- ring 2 — pink tilted orbit -->
+        <g class="ring2">
+          <ellipse cx="55" cy="55" rx="50" ry="16" fill="none" stroke="#ff2d78" stroke-width="1.5" opacity=".45" stroke-dasharray="4 3" transform="rotate(60 55 55)"/>
+          <circle cx="105" cy="55" r="4.5" fill="#ff2d78" transform="rotate(60 55 55)"/>
+        </g>
+        <!-- ring 3 — purple tilted orbit -->
+        <g class="ring3">
+          <ellipse cx="55" cy="55" rx="50" ry="16" fill="none" stroke="#d500f9" stroke-width="1.5" opacity=".35" stroke-dasharray="4 3" transform="rotate(-60 55 55)"/>
+          <circle cx="105" cy="55" r="4.5" fill="#d500f9" transform="rotate(-60 55 55)"/>
+        </g>
+        <!-- core sphere -->
+        <g class="orb-core">
+          <circle cx="55" cy="55" r="28" fill="white" stroke="#1a1a1a" stroke-width="2.5"/>
+          <text x="55" y="51" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#aaa">qubit</text>
+          <text x="55" y="65" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#1a1a1a">0|1</text>
+        </g>
+      </svg>
+    </div>
+
+    <h1>SPACCA L'UNIVERSO</h1>
+    <p class="sub">un qubit · due destini · infiniti universi paralleli</p>
+
+    <!-- options -->
+    <div class="options">
+      <div class="opt opt-a">
+        <div class="opt-tag">🅰 Opzione A</div>
+        <input id="optA" type="text" placeholder="es. restare a casa" maxlength="36"/>
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="opt opt-b">
+        <div class="opt-tag">🅱 Opzione B</div>
+        <input id="optB" type="text" placeholder="es. uscire con gli amici" maxlength="36"/>
       </div>
     </div>
 
-    <!-- main card -->
-    <div class="card">
-      <span class="sticker sticker-1">⚛️</span>
-      <span class="sticker sticker-2">✨</span>
+    <div class="btn-row">
+      <button id="runBtn" onclick="go()">⚡ SPACCA L'UNIVERSO</button>
+    </div>
 
-      <div class="cat-face">
-        <svg class="cat-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="18,44 8,16 36,32" fill="#ff2d78"/>
-          <polygon points="82,44 92,16 64,32" fill="#ff2d78"/>
-          <polygon points="20,42 12,22 34,33" fill="#ffb3cc"/>
-          <polygon points="80,42 88,22 66,33" fill="#ffb3cc"/>
-          <ellipse cx="50" cy="57" rx="37" ry="33" fill="#fff0f5"/>
-          <ellipse cx="50" cy="57" rx="37" ry="33" fill="none" stroke="#1a1a1a" stroke-width="2.5"/>
-          <g class="eye" style="transform-origin:37px 52px">
-            <ellipse cx="37" cy="52" rx="9" ry="10" fill="#2979ff"/>
-            <ellipse cx="37" cy="52" rx="5" ry="8"  fill="#1a1a1a"/>
-            <circle  cx="39" cy="48" r="2" fill="white"/>
-          </g>
-          <g class="eye-r" style="transform-origin:63px 52px">
-            <ellipse cx="63" cy="52" rx="9" ry="10" fill="#2979ff"/>
-            <ellipse cx="63" cy="52" rx="5" ry="8"  fill="#1a1a1a"/>
-            <circle  cx="65" cy="48" r="2" fill="white"/>
-          </g>
-          <polygon points="50,63 47,67 53,67" fill="#ff2d78"/>
-          <path d="M47 67 Q44 71 41 69" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <path d="M53 67 Q56 71 59 69" stroke="#1a1a1a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <ellipse cx="28" cy="66" rx="7" ry="4" fill="#ffb3cc" opacity="0.7"/>
-          <ellipse cx="72" cy="66" rx="7" ry="4" fill="#ffb3cc" opacity="0.7"/>
-          <line x1="8"  y1="60" x2="40" y2="63" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
-          <line x1="8"  y1="66" x2="40" y2="65" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
-          <line x1="92" y1="60" x2="60" y2="63" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
-          <line x1="92" y1="66" x2="60" y2="65" stroke="#1a1a1a" stroke-width="1" opacity="0.4"/>
+    <!-- steps -->
+    <div class="steps" id="steps">
+      <div class="step" id="s1"><div class="step-bub">🔑</div><div class="step-lbl">Connetti</div></div>
+      <div class="step-line" id="l1"></div>
+      <div class="step" id="s2"><div class="step-bub">🖥️</div><div class="step-lbl">Trova chip</div></div>
+      <div class="step-line" id="l2"></div>
+      <div class="step" id="s3"><div class="step-bub">⚛️</div><div class="step-lbl">Sovrapponi</div></div>
+      <div class="step-line" id="l3"></div>
+      <div class="step" id="s4"><div class="step-bub">🚀</div><div class="step-lbl">Esegui</div></div>
+      <div class="step-line" id="l4"></div>
+      <div class="step" id="s5"><div class="step-bub">🎯</div><div class="step-lbl">Misura</div></div>
+    </div>
+
+    <!-- status bar -->
+    <div class="sbar" id="sbar">
+      <div class="sdot"></div>
+      <span id="stxt">Avvio in corso…</span>
+    </div>
+
+    <!-- log -->
+    <div class="log" id="log"></div>
+
+    <!-- result -->
+    <div class="result" id="result">
+
+      <div class="split-header">
+        <div class="split-title">🌌 L'universo si è diviso.</div>
+        <div class="split-sub" id="split-sub"></div>
+      </div>
+
+      <!-- fork visual -->
+      <div class="fork-wrap">
+        <svg class="fork-svg" viewBox="0 0 120 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- stem -->
+          <line x1="60" y1="0" x2="60" y2="22" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- fork left -->
+          <path d="M60 22 Q60 36 22 48" stroke="#ff2d78" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- fork right -->
+          <path d="M60 22 Q60 36 98 48" stroke="#2979ff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- dots -->
+          <circle cx="60" cy="22" r="4" fill="#1a1a1a"/>
+          <circle cx="22" cy="48" r="5" fill="#ff2d78"/>
+          <circle cx="98" cy="48" r="5" fill="#2979ff"/>
+          <!-- labels -->
+          <text x="10" y="56" font-family="Space Mono, monospace" font-size="7" fill="#ff2d78" font-weight="700">questo</text>
+          <text x="82" y="56" font-family="Space Mono, monospace" font-size="7" fill="#2979ff" font-weight="700">l'altro</text>
         </svg>
       </div>
 
-      <h1>QUANTUM CAT</h1>
-      <p class="subtitle">Schrödinger's qubit — real IBM hardware — one shot</p>
-
-      <div class="btn-row">
-        <button id="runBtn" onclick="runCircuit()">COLLAPSE THE WAVE</button>
+      <div class="universes">
+        <div class="uni here">
+          <div class="uni-tag">🌟 Questo universo</div>
+          <div class="uni-qubit" id="qubitHere"></div>
+          <div class="uni-name" id="nameHere"></div>
+          <div class="uni-desc">Sei tu. Qui. Adesso.</div>
+        </div>
+        <div class="uni there">
+          <div class="uni-tag">👻 L'altro universo</div>
+          <div class="uni-qubit" id="qubitThere"></div>
+          <div class="uni-name" id="nameThere"></div>
+          <div class="uni-desc">L'altra versione di te esiste davvero.</div>
+        </div>
       </div>
 
-      <!-- step tracker -->
-      <div class="steps" id="steps">
+      <div class="qubit-note" id="qnote"></div>
+    </div>
 
-        <div class="step" id="step-1">
-          <div class="step-bubble">🔑</div>
-          <div class="step-label">Connect</div>
-          <div class="step-tip">Log into IBM Quantum</div>
-        </div>
-        <div class="step-connector" id="conn-1"></div>
+    <div class="err" id="err"></div>
 
-        <div class="step" id="step-2">
-          <div class="step-bubble">🖥️</div>
-          <div class="step-label">Find chip</div>
-          <div class="step-tip">Pick a real quantum processor</div>
-        </div>
-        <div class="step-connector" id="conn-2"></div>
+  </div>
+</div>
 
-        <div class="step" id="step-3">
-          <div class="step-bubble">⚛️</div>
-          <div class="step-label">Superpose</div>
-          <div class="step-tip">Put the qubit in superposition</div>
-        </div>
-        <div class="step-connector" id="conn-3"></div>
+<script>
+  // confetti
+  const clrs = ['#ff2d78','#ffd600','#2979ff','#00c853','#d500f9','#ff6d00'];
+  const bgEl = document.getElementById('bg');
+  for (let i = 0; i < 32; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    const sz = 5 + Math.random() * 12;
+    d.style.cssText = `
+      width:${sz}px;height:${sz}px;
+      left:${Math.random()*100}vw;
+      background:${clrs[Math.floor(Math.random()*clrs.length)]};
+      animation-duration:${10+Math.random()*18}s;
+      animation-delay:${-Math.random()*26}s;
+      border-radius:${Math.random()>.35?'50%':'4px'};
+    `;
+    bgEl.appendChild(d);
+  }
 
-        <div class="step" id="step-4">
-          <div class="step-bubble">🚀</div>
-          <div class="step-label">Run</div>
-          <div class="step-tip">Execute on real hardware</div>
-        </div>
-        <div class="step-connector" id="conn-4"></div>
+  const STEP_MSG = [null,
+    'Accesso a IBM Quantum in corso…',
+    'Cerco il processore meno occupato…',
+    'Metto il qubit in sovrapposizione…',
+    'Invio sull\'hardware quantistico reale…',
+    'Misura del qubit — il destino si decide…',
+  ];
+  const STEP_ICONS = ['🔑','🖥️','⚛️','🚀','🎯'];
 
-        <div class="step" id="step-5">
-          <div class="step-bubble">🎯</div>
-          <div class="step-label">Measure</div>
-          <div class="step-tip">Collapse the superposition</div>
-        </div>
+  let timer=null, rendered=0, typing=null, curStep=0;
+  const $= id => document.getElementById(id);
 
-      </div>
+  function setStep(n) {
+    if (n <= curStep) return;
+    for (let i=curStep; i<n; i++) {
+      const s=$('s'+i); if(s){s.classList.remove('active');s.classList.add('done');s.querySelector('.step-bub').textContent='✓';}
+      const l=$('l'+i); if(l) l.classList.add('done');
+    }
+    curStep=n;
+    const el=$('s'+n);
+    if(el){el.classList.remove('done');el.classList.add('active');}
+    if(STEP_MSG[n]) $('stxt').textContent=STEP_MSG[n];
+  }
 
-      <!-- live status bar -->
-      <div class="status-bar" id="statusBar">
-        <div class="status-dot"></div>
-        <span id="statusText">Starting…</span>
-      </div>
+  function reset() {
+    rendered=0; curStep=0; typing=null;
+    $('log').innerHTML=''; $('log').classList.remove('on');
+    $('steps').classList.remove('on');
+    $('sbar').classList.remove('on');
+    $('result').classList.remove('on');
+    $('err').classList.remove('on'); $('err').textContent='';
+    for(let i=1;i<=5;i++){
+      const s=$('s'+i); if(s){s.className='step';s.querySelector('.step-bub').textContent=STEP_ICONS[i-1];}
+      const l=$('l'+i); if(l) l.classList.remove('done');
+    }
+  }
 
-      <!-- detail log -->
-      <div class="log-panel" id="logPanel"></div>
+  function addTyping(){
+    const d=document.createElement('div'); d.className='typing';
+    d.innerHTML='<span></span><span></span><span></span>';
+    $('log').appendChild(d); $('log').scrollTop=$('log').scrollHeight; typing=d;
+  }
+  function rmTyping(){ if(typing&&typing.parentNode) typing.parentNode.removeChild(typing); typing=null; }
 
-      <!-- result -->
-      <div class="result-banner" id="resultBanner">
-        <div class="result-label" id="resultLabel"></div>
-        <div id="resultValue"></div>
-        <div class="result-quip" id="resultQuip"></div>
-        <div class="result-explain" id="resultExplain"></div>
-      </div>
+  function addLog(e){
+    rmTyping();
+    const row=document.createElement('div');
+    row.className='le'+(e.kind!=='info'?' '+e.kind:'');
+    const t=document.createElement('span'); t.className='lt'; t.textContent=e.time;
+    const m=document.createElement('span'); m.className='lm'; m.textContent=e.msg;
+    row.appendChild(t); row.appendChild(m);
+    $('log').appendChild(row); addTyping(); $('log').scrollTop=$('log').scrollHeight;
+  }
 
-    </div><!-- /card -->
-  </div><!-- /page -->
+  function renderLogs(logs){
+    for(let i=rendered;i<logs.length;i++){
+      const e=logs[i]; if(e.step) setStep(e.step); addLog(e);
+    }
+    rendered=logs.length;
+  }
 
-  <script>
-    // confetti
-    const colors = ['#ff2d78','#ffd600','#2979ff','#00e676','#d500f9','#ff6d00'];
-    const wrap = document.getElementById('confetti');
-    for (let i = 0; i < 28; i++) {
-      const d = document.createElement('div');
-      d.className = 'dot';
-      const size = 6 + Math.random() * 10;
-      d.style.cssText = `
-        width:${size}px;height:${size}px;
-        left:${Math.random()*100}vw;
-        background:${colors[Math.floor(Math.random()*colors.length)]};
-        animation-duration:${8+Math.random()*16}s;
-        animation-delay:${-Math.random()*20}s;
-        border-radius:${Math.random()>0.4?'50%':'4px'};
-      `;
-      wrap.appendChild(d);
+  async function go(){
+    if(timer) clearInterval(timer);
+    reset();
+    $('runBtn').disabled=true;
+    $('steps').classList.add('on');
+    $('sbar').classList.add('on');
+    $('log').classList.add('on');
+    addTyping();
+
+    const a=$('optA').value.trim()||'A';
+    const b=$('optB').value.trim()||'B';
+
+    let jobId;
+    try{
+      const res=await fetch('/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({a,b})});
+      jobId=(await res.json()).job_id;
+    }catch(e){
+      rmTyping(); addLog({time:now(),msg:'Errore di connessione: '+e.message,kind:'error'});
+      $('runBtn').disabled=false; return;
     }
 
-    const STEP_STATUS = [
-      null,
-      "Logging into IBM Quantum…",
-      "Searching for a live quantum chip…",
-      "Building the superposition experiment…",
-      "Running on real quantum hardware…",
-      "Reading the quantum measurement…",
-    ];
+    timer=setInterval(async()=>{
+      try{
+        const data=await(await fetch('/status/'+jobId)).json();
+        renderLogs(data.logs||[]);
 
-    const quips = {
-      '0': [
-        "the box opens. the cat stares back.",
-        "alive. purring in superposition no longer.",
-        "the universe chose life. this time.",
-      ],
-      '1': [
-        "dead. and yet — meow.",
-        "the box has spoken. the cat disagrees.",
-        "collapsed into oblivion. the meow remains.",
-      ],
-    };
+        if(data.status==='done'){
+          clearInterval(timer); rmTyping(); $('runBtn').disabled=false;
+          $('sbar').classList.remove('on');
+          for(let i=curStep;i<=5;i++) setStep(i);
 
-    const explains = {
-      '0': "The qubit collapsed to 0. With a perfect Hadamard gate the odds are 50/50 — pure quantum randomness decided this.",
-      '1': "The qubit collapsed to 1. With a perfect Hadamard gate the odds are 50/50 — pure quantum randomness decided this.",
-    };
+          const isZero=data.result==='0';
+          const optA=data.option_a||'A';
+          const optB=data.option_b||'B';
 
-    let pollInterval  = null;
-    let renderedCount = 0;
-    let typingEl      = null;
-    let currentStep   = 0;
+          $('nameHere').textContent  = isZero ? optA : optB;
+          $('nameThere').textContent = isZero ? optB : optA;
+          $('qubitHere').textContent  = `qubit = ${data.result}`;
+          $('qubitThere').textContent = `qubit = ${data.result==='0'?'1':'0'}`;
+          $('split-sub').textContent  = `il qubit è collassato a ${data.result} — nell'altro universo vale ${data.result==='0'?'1':'0'}`;
+          $('qnote').textContent = 'misurato su hardware IBM reale · la fisica quantistica ha deciso · nessuno poteva saperlo prima';
+          $('result').classList.add('on');
 
-    const logPanel     = document.getElementById('logPanel');
-    const resultBanner = document.getElementById('resultBanner');
-    const resultLabel  = document.getElementById('resultLabel');
-    const resultValue  = document.getElementById('resultValue');
-    const resultQuip   = document.getElementById('resultQuip');
-    const resultExplain= document.getElementById('resultExplain');
-    const runBtn       = document.getElementById('runBtn');
-    const stepsEl      = document.getElementById('steps');
-    const statusBar    = document.getElementById('statusBar');
-    const statusText   = document.getElementById('statusText');
-
-    function setStep(n) {
-      if (n <= currentStep) return;
-      // mark previous steps done
-      for (let i = currentStep; i < n; i++) {
-        const s = document.getElementById('step-' + i);
-        if (s) { s.classList.remove('active'); s.classList.add('done'); s.querySelector('.step-bubble').textContent = '✓'; }
-        const c = document.getElementById('conn-' + i);
-        if (c) c.classList.add('done');
-      }
-      currentStep = n;
-      const el = document.getElementById('step-' + n);
-      if (el) { el.classList.remove('done'); el.classList.add('active'); }
-      if (STEP_STATUS[n]) statusText.textContent = STEP_STATUS[n];
-    }
-
-    function reset() {
-      renderedCount = 0;
-      currentStep   = 0;
-      typingEl      = null;
-      logPanel.innerHTML = '';
-      logPanel.classList.remove('visible');
-      stepsEl.classList.remove('visible');
-      statusBar.classList.remove('visible');
-      resultBanner.className = 'result-banner';
-      resultLabel.textContent = resultValue.className = resultValue.textContent = '';
-      resultQuip.textContent = resultExplain.textContent = '';
-      for (let i = 1; i <= 5; i++) {
-        const s = document.getElementById('step-' + i);
-        if (s) { s.className = 'step'; const b = s.querySelector('.step-bubble'); b.textContent = ['🔑','🖥️','⚛️','🚀','🎯'][i-1]; }
-        const c = document.getElementById('conn-' + i);
-        if (c) c.classList.remove('done');
-      }
-    }
-
-    function addTyping() {
-      const d = document.createElement('div');
-      d.className = 'typing';
-      d.innerHTML = '<span></span><span></span><span></span>';
-      logPanel.appendChild(d);
-      logPanel.scrollTop = logPanel.scrollHeight;
-      typingEl = d;
-    }
-    function removeTyping() {
-      if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
-      typingEl = null;
-    }
-
-    function appendLog(entry) {
-      removeTyping();
-      const row = document.createElement('div');
-      row.className = 'log-entry' + (entry.kind !== 'info' ? ' ' + entry.kind : '');
-      const t = document.createElement('span'); t.className = 'log-time'; t.textContent = entry.time;
-      const m = document.createElement('span'); m.className = 'log-msg';  m.textContent = entry.msg;
-      row.appendChild(t); row.appendChild(m);
-      logPanel.appendChild(row);
-      addTyping();
-      logPanel.scrollTop = logPanel.scrollHeight;
-    }
-
-    function renderLogs(logs) {
-      for (let i = renderedCount; i < logs.length; i++) {
-        const e = logs[i];
-        if (e.step) setStep(e.step);
-        appendLog(e);
-      }
-      renderedCount = logs.length;
-    }
-
-    async function runCircuit() {
-      if (pollInterval) clearInterval(pollInterval);
-      reset();
-      runBtn.disabled = true;
-      stepsEl.classList.add('visible');
-      statusBar.classList.add('visible');
-      logPanel.classList.add('visible');
-      addTyping();
-
-      let jobId;
-      try {
-        const res  = await fetch('/run', { method: 'POST' });
-        const data = await res.json();
-        jobId = data.job_id;
-      } catch (e) {
-        removeTyping();
-        appendLog({ time: now(), msg: 'Failed to reach the server: ' + e.message, kind: 'error' });
-        runBtn.disabled = false;
-        return;
-      }
-
-      pollInterval = setInterval(async () => {
-        try {
-          const res  = await fetch('/status/' + jobId);
-          const data = await res.json();
-          renderLogs(data.logs || []);
-
-          if (data.status === 'done') {
-            clearInterval(pollInterval);
-            removeTyping();
-            runBtn.disabled = false;
-            statusBar.classList.remove('visible');
-            // complete all steps
-            for (let i = currentStep; i <= 5; i++) setStep(i);
-            resultBanner.classList.add('done');
-            resultLabel.textContent = 'the qubit collapsed to';
-            resultValue.className = 'result-value';
-            resultValue.textContent = data.result;
-            const pool = quips[data.result] || ['meow.'];
-            resultQuip.textContent = pool[Math.floor(Math.random() * pool.length)];
-            resultExplain.textContent = explains[data.result] || '';
-          } else if (data.status === 'error') {
-            clearInterval(pollInterval);
-            removeTyping();
-            runBtn.disabled = false;
-            statusBar.classList.remove('visible');
-            resultBanner.classList.add('error-state');
-            resultLabel.textContent = 'something went wrong :(';
-            resultValue.className = 'error-value';
-            resultValue.textContent = data.result;
-          }
-        } catch (e) {
-          clearInterval(pollInterval);
-          removeTyping();
-          appendLog({ time: now(), msg: 'Lost connection to server.', kind: 'error' });
-          runBtn.disabled = false;
+        }else if(data.status==='error'){
+          clearInterval(timer); rmTyping(); $('runBtn').disabled=false;
+          $('sbar').classList.remove('on');
+          $('err').textContent='⚠️ Qualcosa è andato storto: '+data.result;
+          $('err').classList.add('on');
         }
-      }, 1500);
-    }
+      }catch(e){
+        clearInterval(timer); rmTyping();
+        addLog({time:now(),msg:'Connessione al server persa.',kind:'error'});
+        $('runBtn').disabled=false;
+      }
+    },1500);
+  }
 
-    function now() { return new Date().toTimeString().slice(0, 8); }
-  </script>
+  function now(){return new Date().toTimeString().slice(0,8);}
+</script>
 </body>
 </html>
