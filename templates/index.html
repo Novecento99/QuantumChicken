@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Spacca l'Universo</title>
+  <title>Everett's Bifurcation</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:wght@400;700&family=Outfit:wght@400;600&display=swap');
 
@@ -334,24 +334,28 @@
 
   <!-- pitch -->
   <div class="pitch">
-    <div class="pitch-icon">🌌</div>
+    <div class="pitch-icon">🔬</div>
     <div>
-      <div class="pitch-title">Sei indeciso tra A e B? Fai entrambi.</div>
+      <div class="pitch-title">The Many-Worlds Interpretation, applied to your daily decisions.</div>
       <p>
-        Ogni volta che misuri un <strong>qubit</strong>, l'universo si divide in due.
-        In uno ottieni 0, nell'altro 1 — e non c'è niente che possa prevederlo in anticipo,
-        nemmeno la fisica classica. Scrivi le tue due opzioni, premi il bottone,
-        e lascia che un <strong>vero computer quantistico IBM</strong> decida il tuo destino.
-        La versione di te nell'<strong>universo parallelo</strong> farà l'altra scelta.
+        In 1957, physicist <strong>Hugh Everett III</strong> proposed the
+        <em>Many-Worlds Interpretation</em> (MWI): every time a quantum system is measured,
+        the universe branches — one branch per possible outcome. There is no wave function
+        collapse; instead, <strong>all outcomes happen</strong> in parallel branches, each equally real.<br><br>
+        We apply a <strong>Hadamard gate</strong> to a qubit, preparing the superposition state
+        <strong>|ψ⟩ = 1/√2 (|0⟩ + |1⟩)</strong>.
+        Measured on a <strong>real IBM Quantum processor</strong>, the result is 0 or 1 with
+        exactly 50% probability each (Born rule).
+        In this branch you get A or B — your counterpart in the other branch gets the opposite.
       </p>
     </div>
   </div>
 
   <!-- main card -->
   <div class="card">
-    <span class="stk sk1">✦</span>
-    <span class="stk sk2">⚛️</span>
-    <span class="stk sk3">✦</span>
+    <span class="stk sk1">⚛️</span>
+    <span class="stk sk2">🔭</span>
+    <span class="stk sk3">🧬</span>
 
     <!-- qubit orb -->
     <div class="orb-wrap">
@@ -382,43 +386,43 @@
       </svg>
     </div>
 
-    <h1>SPACCA L'UNIVERSO</h1>
-    <p class="sub">un qubit · due destini · infiniti universi paralleli</p>
+    <h1>EVERETT'S BIFURCATION</h1>
+    <p class="sub">MWI · Everett (1957) · gate H · |ψ⟩ = 1/√2 (|0⟩ + |1⟩) · IBM Quantum</p>
 
     <!-- options -->
     <div class="options">
       <div class="opt opt-a">
-        <div class="opt-tag">🅰 Opzione A</div>
-        <input id="optA" type="text" placeholder="es. ramen" maxlength="36"/>
+        <div class="opt-tag">🅰 Option A</div>
+        <input id="optA" type="text" placeholder="e.g. pizza" maxlength="36"/>
       </div>
       <div class="vs-badge">VS</div>
       <div class="opt opt-b">
-        <div class="opt-tag">🅱 Opzione B</div>
-        <input id="optB" type="text" placeholder="es. pizza" maxlength="36"/>
+        <div class="opt-tag">🅱 Option B</div>
+        <input id="optB" type="text" placeholder="e.g. ramen" maxlength="36"/>
       </div>
     </div>
 
     <div class="btn-row">
-      <button id="runBtn" onclick="go()">⚡ SPACCA L'UNIVERSO</button>
+      <button id="runBtn" onclick="go()">⚡ RUN THE QUANTUM MEASUREMENT</button>
     </div>
 
     <!-- steps -->
     <div class="steps" id="steps">
-      <div class="step" id="s1"><div class="step-bub">🔑</div><div class="step-lbl">Connetti</div></div>
+      <div class="step" id="s1"><div class="step-bub">🔑</div><div class="step-lbl">Connect</div></div>
       <div class="step-line" id="l1"></div>
-      <div class="step" id="s2"><div class="step-bub">🖥️</div><div class="step-lbl">Trova chip</div></div>
+      <div class="step" id="s2"><div class="step-bub">🖥️</div><div class="step-lbl">Find chip</div></div>
       <div class="step-line" id="l2"></div>
-      <div class="step" id="s3"><div class="step-bub">⚛️</div><div class="step-lbl">Sovrapponi</div></div>
+      <div class="step" id="s3"><div class="step-bub">⚛️</div><div class="step-lbl">Superpose</div></div>
       <div class="step-line" id="l3"></div>
-      <div class="step" id="s4"><div class="step-bub">🚀</div><div class="step-lbl">Esegui</div></div>
+      <div class="step" id="s4"><div class="step-bub">🚀</div><div class="step-lbl">Run</div></div>
       <div class="step-line" id="l4"></div>
-      <div class="step" id="s5"><div class="step-bub">🎯</div><div class="step-lbl">Misura</div></div>
+      <div class="step" id="s5"><div class="step-bub">🎯</div><div class="step-lbl">Measure</div></div>
     </div>
 
     <!-- status bar -->
     <div class="sbar" id="sbar">
       <div class="sdot"></div>
-      <span id="stxt">Avvio in corso…</span>
+      <span id="stxt">Starting…</span>
     </div>
 
     <!-- log -->
@@ -428,7 +432,7 @@
     <div class="result" id="result">
 
       <div class="split-header">
-        <div class="split-title">🌌 L'universo si è diviso.</div>
+        <div class="split-title">⚛️ Branching complete — Everett's MWI in action.</div>
         <div class="split-sub" id="split-sub"></div>
       </div>
 
@@ -446,23 +450,23 @@
           <circle cx="22" cy="48" r="5" fill="#ff2d78"/>
           <circle cx="98" cy="48" r="5" fill="#2979ff"/>
           <!-- labels -->
-          <text x="10" y="56" font-family="Space Mono, monospace" font-size="7" fill="#ff2d78" font-weight="700">questo</text>
-          <text x="82" y="56" font-family="Space Mono, monospace" font-size="7" fill="#2979ff" font-weight="700">l'altro</text>
+          <text x="2" y="56" font-family="Space Mono, monospace" font-size="7" fill="#ff2d78" font-weight="700">ramo |0⟩</text>
+          <text x="76" y="56" font-family="Space Mono, monospace" font-size="7" fill="#2979ff" font-weight="700">ramo |1⟩</text>
         </svg>
       </div>
 
       <div class="universes">
         <div class="uni here">
-          <div class="uni-tag">🌟 Questo universo</div>
+          <div class="uni-tag">🌟 This branch</div>
           <div class="uni-qubit" id="qubitHere"></div>
           <div class="uni-name" id="nameHere"></div>
-          <div class="uni-desc">Sei tu. Qui. Adesso.</div>
+          <div class="uni-desc">The branch where your observed state lives.</div>
         </div>
         <div class="uni there">
-          <div class="uni-tag">👻 L'altro universo</div>
+          <div class="uni-tag">👻 Complementary branch</div>
           <div class="uni-qubit" id="qubitThere"></div>
           <div class="uni-name" id="nameThere"></div>
-          <div class="uni-desc">L'altra versione di te esiste davvero.</div>
+          <div class="uni-desc">Your counterpart here observed the complementary outcome.</div>
         </div>
       </div>
 
@@ -494,11 +498,11 @@
   }
 
   const STEP_MSG = [null,
-    'Accesso a IBM Quantum in corso…',
-    'Cerco il processore meno occupato…',
-    'Metto il qubit in sovrapposizione…',
-    'Invio sull\'hardware quantistico reale…',
-    'Misura del qubit — il destino si decide…',
+    'Authenticating with IBM Quantum…',
+    'Selecting the least busy backend…',
+    'Preparing state |ψ⟩ = 1/√2 (|0⟩ + |1⟩) via Hadamard gate…',
+    'Transpiling and running on real QPU…',
+    'Projective measurement — applying Born rule…',
   ];
   const STEP_ICONS = ['🔑','🖥️','⚛️','🚀','🎯'];
 
@@ -571,7 +575,7 @@
       const res=await fetch('/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({a,b})});
       jobId=(await res.json()).job_id;
     }catch(e){
-      rmTyping(); addLog({time:now(),msg:'Errore di connessione: '+e.message,kind:'error'});
+      rmTyping(); addLog({time:now(),msg:'Connection error: '+e.message,kind:'error'});
       $('runBtn').disabled=false; return;
     }
 
@@ -591,21 +595,22 @@
 
           $('nameHere').textContent  = isZero ? optA : optB;
           $('nameThere').textContent = isZero ? optB : optA;
-          $('qubitHere').textContent  = `qubit = ${data.result}`;
-          $('qubitThere').textContent = `qubit = ${data.result==='0'?'1':'0'}`;
-          $('split-sub').textContent  = `il qubit è collassato a ${data.result} — nell'altro universo vale ${data.result==='0'?'1':'0'}`;
-          $('qnote').textContent = 'misurato su hardware IBM reale · la fisica quantistica ha deciso · nessuno poteva saperlo prima';
+          const other = data.result==='0'?'1':'0';
+          $('qubitHere').textContent  = `|${data.result}⟩ — this branch`;
+          $('qubitThere').textContent = `|${other}⟩ — complementary branch`;
+          $('split-sub').textContent  = `projective measurement: |ψ⟩ → |${data.result}⟩ · complementary branch |${other}⟩ exists per Everett's MWI`;
+          $('qnote').textContent = 'IBM Quantum QPU · Hadamard gate · Born rule P(0)=P(1)=0.5 · environmental decoherence negligible at operating temperature';
           $('result').classList.add('on');
 
         }else if(data.status==='error'){
           clearInterval(timer); rmTyping(); $('runBtn').disabled=false;
           $('sbar').classList.remove('on');
-          $('err').textContent='⚠️ Qualcosa è andato storto: '+data.result;
+          $('err').textContent='⚠️ Something went wrong: '+data.result;
           $('err').classList.add('on');
         }
       }catch(e){
         clearInterval(timer); rmTyping();
-        addLog({time:now(),msg:'Connessione al server persa.',kind:'error'});
+        addLog({time:now(),msg:'Lost connection to server.',kind:'error'});
         $('runBtn').disabled=false;
       }
     },1500);
