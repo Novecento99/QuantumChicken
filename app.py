@@ -1,5 +1,6 @@
 import os
 import threading
+import time
 import uuid
 from datetime import datetime
 
@@ -64,12 +65,36 @@ def run_qubit(job_id):
         job = sampler.run([isa_circuit], shots=1)
         log(job_id, f"Queued. Job ID: {job.job_id()} — waiting for our turn on the chip…", step=4)
 
+        # Poll until done, logging queue position updates
+        last_pos = None
+        logged_running = False
+        while True:
+            status_str = str(job.status()).upper()
+            if "DONE" in status_str:
+                break
+            if "ERROR" in status_str or "CANCEL" in status_str:
+                raise Exception(f"Job ended with status: {job.status()}")
+            if "RUNNING" in status_str and not logged_running:
+                logged_running = True
+                log(job_id, "Job is now running on the chip — executing the circuit…", step=5)
+            elif "QUEUED" in status_str or "INITIALIZ" in status_str:
+                try:
+                    queue_info_fn = getattr(job, "queue_info", None)
+                    qi = queue_info_fn() if queue_info_fn else None
+                    pos = getattr(qi, "position", None) if qi else None
+                    if pos is not None and pos != last_pos:
+                        last_pos = pos
+                        log(job_id, f"{pos} job{'s' if pos != 1 else ''} ahead of us in queue…", step=4)
+                except Exception:
+                    pass
+            time.sleep(10)
+
         # Step 5 — read result
         result = job.result()
         counts = dict(result[0].data.meas.get_counts())
         value = list(counts.keys())[0]
 
-        log(job_id, f"Measurement result: {value}. Superposition collapsed. The universe has branched.", "success", step=5)
+        log(job_id, f"Measured |{value}⟩ — wave function collapsed.", "success", step=5)
         jobs[job_id]["status"] = "done"
         jobs[job_id]["result"] = value
 

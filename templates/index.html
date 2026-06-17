@@ -1,622 +1,531 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Everett's Bifurcation</title>
+  <title>Schrödinger's Cat</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Mono:wght@400;700&family=Outfit:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Space+Mono:wght@400;700&family=Outfit:wght@400;600;700&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --pink:   #ff2d78;
-      --yellow: #ffd600;
-      --blue:   #2979ff;
-      --green:  #00c853;
-      --orange: #ff6d00;
-      --purple: #d500f9;
+      --amber:  #f59e0b;
+      --green:  #16a34a;
+      --dead:   #64748b;
+      --purple: #7c3aed;
+      --ink:    #1c1917;
+      --cream:  #faf7f2;
     }
 
     body {
       min-height: 100vh;
-      display: flex; align-items: flex-start; justify-content: center;
-      padding: 44px 16px 72px;
-      background: #f8f6ff;
-      background-image:
-        radial-gradient(circle at  8% 15%, #ffe0f0 0%, transparent 30%),
-        radial-gradient(circle at 92%  8%, #dceeff 0%, transparent 30%),
-        radial-gradient(circle at 88% 90%, #f0e0ff 0%, transparent 30%),
-        radial-gradient(circle at 10% 88%, #d8ffed 0%, transparent 30%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 48px 20px 64px;
+      background-color: var(--cream);
+      background-image: radial-gradient(circle, #d9d0c4 1.3px, transparent 1.3px);
+      background-size: 26px 26px;
       font-family: 'Outfit', sans-serif;
-      color: #1a1a1a;
+      color: var(--ink);
     }
 
-    /* confetti */
+    /* ── floating background elements ── */
     .bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
-    .dot { position: absolute; animation: fall linear infinite; }
-    @keyframes fall {
-      from { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
-      8%   { opacity: .4; }
-      92%  { opacity: .4; }
-      to   { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    .floater {
+      position: absolute; opacity: 0; user-select: none;
+      animation: rise linear infinite;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(105vh) rotate(0deg);   opacity: 0; }
+      6%   { opacity: .2; }
+      94%  { opacity: .2; }
+      100% { transform: translateY(-10vh) rotate(25deg);  opacity: 0; }
     }
 
-    .page {
+    /* ── PAGE LAYOUT ── */
+    .container {
       position: relative; z-index: 1;
-      display: flex; flex-direction: column; gap: 20px;
-      width: min(620px, 100%);
+      width: min(520px, 100%);
+      display: flex; flex-direction: column; align-items: center; gap: 28px;
     }
-
-    /* ── PITCH CARD ── */
-    .pitch {
-      background: #fff; border: 2.5px solid #1a1a1a;
-      border-radius: 22px; padding: 22px 28px;
-      box-shadow: 5px 5px 0 var(--blue);
-      display: flex; gap: 18px; align-items: flex-start;
-    }
-    .pitch-icon {
-      font-size: 2.6rem; line-height: 1; flex-shrink: 0;
-    }
-    .pitch-title {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: 1.1rem; color: var(--blue); margin-bottom: 7px;
-    }
-    .pitch p { font-size: .86rem; color: #444; line-height: 1.65; }
-    .pitch p strong { color: #111; }
 
     /* ── MAIN CARD ── */
     .card {
-      background: #fff; border: 3px solid #1a1a1a;
-      border-radius: 28px; padding: 40px 44px 44px;
-      box-shadow: 7px 7px 0 #1a1a1a, 14px 14px 0 var(--pink), 21px 21px 0 var(--yellow);
-      position: relative;
+      width: 100%; text-align: center;
+      background: #fff;
+      border: 3px solid var(--ink); border-radius: 28px;
+      padding: 44px 40px 48px;
+      box-shadow: 8px 8px 0 var(--ink);
     }
 
-    /* floating stickers on card corners */
-    .stk {
-      position: absolute; font-size: 1.7rem;
-      animation: jiggle 3.5s ease-in-out infinite; user-select: none;
+    /* ── HEADER ── */
+    .title {
+      font-family: 'Fraunces', serif;
+      font-size: 3rem; font-weight: 900; line-height: 1.05;
+      letter-spacing: -.03em; margin-bottom: 10px;
     }
-    .sk1 { top:-16px; right:32px; }
-    .sk2 { top:-14px; left:38px; animation-delay:.9s; }
-    .sk3 { bottom:-15px; left:50px; animation-delay:1.7s; }
-    @keyframes jiggle {
-      0%,100% { transform: rotate(-8deg) scale(1); }
-      50%      { transform: rotate(8deg) scale(1.13); }
-    }
-
-    /* ── QUBIT ORB ── */
-    .orb-wrap {
-      display: flex; justify-content: center; margin-bottom: 20px;
-    }
-    .orb-svg { width: 110px; height: 110px; }
-
-    /* ring animations */
-    .ring1 { animation: spin1 4s linear infinite; transform-origin: 55px 55px; }
-    .ring2 { animation: spin2 6s linear infinite; transform-origin: 55px 55px; }
-    .ring3 { animation: spin3 3s linear infinite; transform-origin: 55px 55px; }
-    @keyframes spin1 { to { transform: rotate(360deg); } }
-    @keyframes spin2 { to { transform: rotate(-360deg); } }
-    @keyframes spin3 { to { transform: rotate(360deg); } }
-
-    .orb-core { animation: orb-pulse 2.2s ease-in-out infinite; transform-origin: 55px 55px; }
-    @keyframes orb-pulse {
-      0%,100% { filter: drop-shadow(0 0 6px rgba(41,121,255,.35)); }
-      50%      { filter: drop-shadow(0 0 18px rgba(41,121,255,.7)); }
-    }
-
-    /* ── TITLES ── */
-    h1 {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: 2.4rem; text-align: center; margin-bottom: 4px;
-      background: linear-gradient(90deg, var(--pink), var(--purple), var(--blue));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .sub {
+    .title em { font-style: normal; color: var(--amber); }
+    .tagline {
       font-family: 'Space Mono', monospace;
-      font-size: .62rem; color: #bbb; text-align: center;
-      letter-spacing: .07em; margin-bottom: 32px;
+      font-size: .68rem; color: #aaa; letter-spacing: .1em;
     }
 
-    /* ── OPTION INPUTS ── */
-    .options {
-      display: grid; grid-template-columns: 1fr auto 1fr;
-      align-items: center; gap: 12px; margin-bottom: 26px;
-    }
-    .opt {
-      border: 2.5px solid #1a1a1a; border-radius: 18px;
-      padding: 14px 16px 12px;
-      display: flex; flex-direction: column; gap: 5px;
-      transition: transform .12s, box-shadow .12s; cursor: text;
-    }
-    .opt:focus-within { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 #1a1a1a; }
-    .opt-a { background: #fff0f5; }
-    .opt-b { background: #f0f4ff; }
-    .opt-tag {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: .8rem; letter-spacing: .04em;
-    }
-    .opt-a .opt-tag { color: var(--pink); }
-    .opt-b .opt-tag { color: var(--blue); }
-    .opt input {
-      border: none; background: transparent;
-      font-family: 'Outfit', sans-serif;
-      font-size: 1rem; font-weight: 600; color: #1a1a1a;
-      outline: none; width: 100%;
-    }
-    .opt input::placeholder { color: #ccc; font-weight: 400; }
-    .vs-badge {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: 1.05rem; color: #ddd; user-select: none; text-align: center;
-    }
+    /* ── BOX SVG ── */
+    .box-wrap { display: flex; justify-content: center; margin: 34px 0 28px; cursor: pointer; }
+    .box-svg  { width: 180px; height: 170px; overflow: visible;
+                filter: drop-shadow(4px 4px 0 rgba(0,0,0,.12)); }
 
-    /* ── BUTTON ── */
-    .btn-row { display: flex; justify-content: center; }
-    button {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: 1.18rem; letter-spacing: .04em;
-      color: #1a1a1a; background: var(--yellow);
-      border: 3px solid #1a1a1a; border-radius: 50px;
-      padding: 14px 48px; cursor: pointer;
+    .box-lid { animation: wobble 2.6s ease-in-out infinite; transform-origin: 90px 48px; }
+    @keyframes wobble { 0%,100%{transform:rotate(-2.5deg)} 50%{transform:rotate(2.5deg)} }
+    .q1 { animation: qfade 2s ease-in-out infinite; }
+    .q2 { animation: qfade 2.7s ease-in-out infinite .6s; }
+    @keyframes qfade { 0%,100%{opacity:.18} 50%{opacity:.55} }
+
+    /* ── OPEN BUTTON ── */
+    .btn {
+      font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700;
+      letter-spacing: .01em;
+      color: var(--ink); background: var(--amber);
+      border: 3px solid var(--ink); border-radius: 50px;
+      padding: 15px 48px; cursor: pointer;
+      box-shadow: 5px 5px 0 var(--ink);
       transition: transform .1s, box-shadow .1s;
-      box-shadow: 4px 4px 0 #1a1a1a;
     }
-    button:hover:not(:disabled) { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 #1a1a1a; }
-    button:active:not(:disabled){ transform: translate(2px,2px);   box-shadow: 2px 2px 0 #1a1a1a; }
-    button:disabled { opacity: .35; cursor: not-allowed; box-shadow: 4px 4px 0 #ccc; }
+    .btn:hover  { transform: translate(-2px,-2px); box-shadow: 7px 7px 0 var(--ink); }
+    .btn:active { transform: translate(3px,3px);   box-shadow: 2px 2px 0 var(--ink); }
 
-    /* ── STEP TRACKER ── */
-    .steps { display: none; align-items: center; margin-top: 28px; }
-    .steps.on { display: flex; }
-    .step { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-    .step-bub {
-      width: 40px; height: 40px; border-radius: 50%;
-      border: 2.5px solid #e8e8e8; background: #f7f7f7;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.05rem;
-      transition: all .3s cubic-bezier(.34,1.56,.64,1);
-    }
-    .step-lbl {
-      font-size: .58rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: .04em; color: #ccc; text-align: center;
-      max-width: 56px; transition: color .3s;
-    }
-    .step-line { flex: 0 0 14px; height: 2.5px; background: #e8e8e8; margin-bottom: 20px; border-radius: 2px; transition: background .4s; }
-    .step.active .step-bub { border-color: var(--blue); background: #e8f0ff; animation: pbub 1.1s ease-in-out infinite; }
-    .step.active .step-lbl { color: var(--blue); }
-    @keyframes pbub {
-      0%,100% { box-shadow: 0 0 0 3px rgba(41,121,255,.2); }
-      50%      { box-shadow: 0 0 0 7px rgba(41,121,255,.07); }
-    }
-    .step.done .step-bub { border-color: var(--green); background: #eafff3; animation: none; box-shadow: none; }
-    .step.done .step-lbl { color: var(--green); }
-    .step-line.done { background: var(--green); }
+    /* ── LOADING ── */
+    .loading { display: none; flex-direction: column; align-items: center; gap: 20px; width: 100%; margin-top: 8px; }
+    .loading.on { display: flex; }
 
-    /* ── STATUS BAR ── */
-    .sbar {
-      display: none; align-items: center; gap: 10px;
-      margin-top: 14px; padding: 10px 16px;
-      background: #fffde7; border: 2px solid var(--yellow);
-      border-radius: 12px; font-size: .82rem; color: #666;
+    .step-track { display: flex; align-items: center; width: 100%; }
+    .s-dot {
+      width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0;
+      background: #e5ddd5; border: 2.5px solid #e5ddd5;
+      transition: all .3s;
     }
-    .sbar.on { display: flex; }
-    .sdot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--orange); flex-shrink: 0;
-      animation: sdot 1s ease-in-out infinite;
+    .s-dot.active {
+      background: var(--amber); border-color: var(--amber);
+      animation: pdot 1s ease-in-out infinite;
     }
-    @keyframes sdot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+    .s-dot.done { background: var(--green); border-color: var(--green); }
+    @keyframes pdot {
+      0%,100% { box-shadow: 0 0 0 4px rgba(245,158,11,.2); }
+      50%      { box-shadow: 0 0 0 9px rgba(245,158,11,.06); }
+    }
+    .s-line { flex: 1; height: 3px; background: #e5ddd5; border-radius: 2px; transition: background .4s; }
+    .s-line.done { background: var(--green); }
 
-    /* ── LOG ── */
-    .log {
-      display: none; margin-top: 12px;
-      background: #fafafa; border: 2px solid #ebebeb;
-      border-radius: 14px; padding: 12px 14px;
-      max-height: 148px; overflow-y: auto; scroll-behavior: smooth;
-      font-family: 'Space Mono', monospace;
+    .step-labels {
+      display: flex; justify-content: space-between; width: 100%;
+      font-family: 'Space Mono', monospace; font-size: .55rem;
+      color: #c5bdb5; text-transform: uppercase; letter-spacing: .06em;
     }
-    .log::-webkit-scrollbar { width: 4px; }
-    .log::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 4px; }
-    .log.on { display: block; }
-    .le {
+
+    .load-status {
+      font-family: 'Space Mono', monospace; font-size: .72rem;
+      color: #555; min-height: 1.5em; max-width: 400px; line-height: 1.5;
+    }
+
+    /* chip info badges */
+    .chip-info {
+      display: none; gap: 10px; justify-content: center; flex-wrap: wrap;
+    }
+    .chip-info.on { display: flex; }
+    .chip-badge {
+      font-family: 'Space Mono', monospace; font-size: .68rem; font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+      background: #fff; border: 2.5px solid var(--ink); border-radius: 20px;
+      padding: 5px 14px;
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+    .chip-badge.queue-badge { border-color: var(--amber); box-shadow: 3px 3px 0 var(--amber); color: #78350f; background: #fffbeb; }
+
+    .elapsed-row {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Space Mono', monospace; font-size: .68rem; color: #bbb;
+      background: #faf7f2; border: 2px solid #e5ddd5; border-radius: 20px;
+      padding: 6px 16px;
+    }
+    .elapsed-val { font-weight: 700; color: var(--ink); min-width: 3.5ch; }
+
+    .queue-note {
+      display: none;
+      font-size: .82rem; line-height: 1.6; color: #78350f;
+      background: #fffbeb;
+      border: 2.5px solid var(--amber); border-radius: 16px;
+      padding: 14px 18px; max-width: 400px;
+      box-shadow: 4px 4px 0 var(--amber);
+      text-align: left;
+    }
+    .queue-note.on { display: block; }
+    .queue-note strong { color: var(--ink); }
+
+    .mini-log {
+      width: 100%;
+      background: #faf7f2; border: 2.5px solid #e5ddd5;
+      border-radius: 14px; padding: 10px 14px;
+      max-height: 130px; overflow-y: auto; scroll-behavior: smooth;
+      font-family: 'Space Mono', monospace; text-align: left;
+    }
+    .mini-log::-webkit-scrollbar { width: 3px; }
+    .mini-log::-webkit-scrollbar-thumb { background: #c5bdb5; border-radius: 3px; }
+    .ml-row {
       display: grid; grid-template-columns: 60px 1fr; gap: 8px;
-      padding: 4px 0; border-bottom: 1px dashed #eee;
-      font-size: .7rem; line-height: 1.5;
-      animation: pop .2s cubic-bezier(.34,1.56,.64,1);
+      padding: 4px 0; font-size: .64rem; line-height: 1.5;
+      border-bottom: 1px dashed #e5ddd5;
+      animation: slide-in .2s ease;
     }
-    .le:last-child { border-bottom: none; }
-    @keyframes pop { from{opacity:0;transform:scale(.96) translateY(3px)} to{opacity:1;transform:none} }
-    .lt { color: #ccc; user-select: none; }
-    .lm { color: #777; }
-    .le.success .lm { color: var(--green); font-weight: 700; }
-    .le.error   .lm { color: var(--pink);  font-weight: 700; }
-    .typing { display: flex; gap: 4px; padding: 6px 0 2px; align-items: center; }
-    .typing span { width: 6px; height: 6px; border-radius: 50%; animation: tb .9s ease-in-out infinite; }
-    .typing span:nth-child(1){ background:var(--pink);   animation-delay:0s; }
-    .typing span:nth-child(2){ background:var(--yellow); animation-delay:.15s; }
-    .typing span:nth-child(3){ background:var(--blue);   animation-delay:.3s; }
-    @keyframes tb { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+    .ml-row:last-child { border-bottom: none; }
+    @keyframes slide-in { from{opacity:0;transform:translateY(3px)} to{opacity:1;transform:none} }
+    .ml-time { color: #c5bdb5; }
+    .ml-msg  { color: #6b6560; }
+    .ml-row.success .ml-msg { color: var(--green); font-weight: 700; }
+    .ml-row.error   .ml-msg { color: #dc2626; font-weight: 700; }
 
     /* ── RESULT ── */
-    .result { display: none; margin-top: 28px; animation: pop .4s cubic-bezier(.34,1.56,.64,1); }
-    .result.on { display: block; }
+    .result { display: none; flex-direction: column; align-items: center; gap: 16px; }
+    .result.on { display: flex; animation: bounce-in .65s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes bounce-in { from{opacity:0;transform:scale(.6)} to{opacity:1;transform:scale(1)} }
 
-    .split-header {
-      text-align: center; margin-bottom: 16px;
+    .cat-emoji {
+      font-size: 7rem; line-height: 1;
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,.14));
     }
-    .split-title {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: 1.25rem; color: #1a1a1a; margin-bottom: 4px;
+    .verdict {
+      font-family: 'Fraunces', serif;
+      font-size: 3.4rem; font-weight: 900; letter-spacing: -.03em;
     }
-    .split-sub {
+    .verdict.alive { color: var(--green); }
+    .verdict.dead  { color: var(--dead); }
+
+    .verdict-note {
       font-family: 'Space Mono', monospace;
-      font-size: .62rem; color: #bbb; letter-spacing: .06em;
+      font-size: .62rem; color: #bbb; letter-spacing: .04em;
     }
 
-    /* fork SVG */
-    .fork-wrap { display: flex; justify-content: center; margin-bottom: 14px; }
-    .fork-svg { width: 120px; height: 56px; }
-
-    /* universe cards */
-    .universes { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-    .uni {
-      border-radius: 22px; padding: 22px 18px 18px;
-      text-align: center; border: 3px solid #1a1a1a;
-      position: relative; overflow: hidden;
+    .again-btn {
+      margin-top: 8px;
+      font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 700;
+      color: var(--ink); background: #fff;
+      border: 3px solid var(--ink); border-radius: 50px;
+      padding: 11px 32px; cursor: pointer;
+      box-shadow: 4px 4px 0 var(--ink);
+      transition: transform .1s, box-shadow .1s;
     }
-    .uni.here {
-      background: linear-gradient(145deg, #fff9e0, #ffe0f0);
-      box-shadow: 5px 5px 0 #1a1a1a;
-    }
-    .uni.there {
-      background: #f6f6f6; border-color: #d0d0d0;
-      box-shadow: 3px 3px 0 #d0d0d0; opacity: .7;
-    }
+    .again-btn:hover  { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--ink); }
+    .again-btn:active { transform: translate(2px,2px);   box-shadow: 2px 2px 0 var(--ink); }
 
-    .uni-tag {
-      font-family: 'Space Mono', monospace;
-      font-size: .58rem; text-transform: uppercase;
-      letter-spacing: .13em; margin-bottom: 10px;
+    /* confetti */
+    .confetti-piece {
+      position: fixed; pointer-events: none; z-index: 200;
+      border-radius: 2px; animation: c-fall linear forwards;
     }
-    .here  .uni-tag { color: var(--pink); }
-    .there .uni-tag { color: #aaa; }
-
-    .uni-qubit {
-      font-family: 'Space Mono', monospace;
-      font-size: .72rem; font-weight: 700;
-      display: inline-block; padding: 3px 10px;
-      border-radius: 20px; margin-bottom: 10px;
-    }
-    .here  .uni-qubit { background: #1a1a1a; color: var(--yellow); }
-    .there .uni-qubit { background: #e8e8e8; color: #999; }
-
-    .uni-name {
-      font-family: 'Fredoka One', sans-serif;
-      font-size: 1.75rem; line-height: 1.2;
-      word-break: break-word; margin-bottom: 8px;
-    }
-    .here  .uni-name {
-      background: linear-gradient(135deg, var(--pink), var(--orange), var(--yellow));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      filter: drop-shadow(2px 2px 0 rgba(0,0,0,.07));
-    }
-    .there .uni-name { color: #bbb; }
-
-    .uni-desc { font-size: .75rem; color: #999; font-style: italic; line-height: 1.4; }
-    .here .uni-desc { color: #666; }
-
-    /* bottom note */
-    .qubit-note {
-      font-family: 'Space Mono', monospace;
-      font-size: .6rem; text-align: center;
-      color: #ccc; margin-top: 12px; letter-spacing: .05em;
+    @keyframes c-fall {
+      0%   { transform: translateY(-30px) rotate(0); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(600deg); opacity: 0; }
     }
 
     /* ── ERROR ── */
-    .err {
-      display: none; margin-top: 18px;
-      background: #fff0f3; border: 3px solid var(--pink);
-      border-radius: 16px; padding: 16px 18px;
-      font-family: 'Space Mono', monospace; font-size: .72rem;
-      color: var(--pink); word-break: break-word;
-      box-shadow: 4px 4px 0 var(--pink);
+    .err-msg {
+      display: none;
+      font-family: 'Space Mono', monospace; font-size: .7rem;
+      color: #dc2626; background: #fef2f2;
+      border: 2.5px solid #dc2626; border-radius: 14px;
+      padding: 14px 18px; word-break: break-word; max-width: 400px;
+      box-shadow: 4px 4px 0 #dc2626;
     }
-    .err.on { display: block; }
+    .err-msg.on { display: block; }
+
+    /* ── EXPLANATION CARD ── */
+    .explanation {
+      width: 100%; text-align: left;
+      background: #fff;
+      border: 3px solid var(--ink); border-radius: 22px;
+      padding: 28px 32px;
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+    .exp-label {
+      font-family: 'Space Mono', monospace;
+      font-size: .62rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .14em;
+      color: #c5bdb5; margin-bottom: 16px;
+    }
+    .exp-body { font-size: .86rem; color: #555; line-height: 1.75; }
+    .exp-body strong { color: var(--ink); }
+    .exp-body p + p { margin-top: 12px; }
   </style>
 </head>
 <body>
 
 <div class="bg" id="bg"></div>
 
-<div class="page">
-
-  <!-- pitch -->
-  <div class="pitch">
-    <div class="pitch-icon">🔬</div>
-    <div>
-      <div class="pitch-title">The Many-Worlds Interpretation, applied to your daily decisions.</div>
-      <p>
-        In 1957, physicist <strong>Hugh Everett III</strong> proposed the
-        <em>Many-Worlds Interpretation</em> (MWI): every time a quantum system is measured,
-        the universe branches — one branch per possible outcome. There is no wave function
-        collapse; instead, <strong>all outcomes happen</strong> in parallel branches, each equally real.<br><br>
-        We apply a <strong>Hadamard gate</strong> to a qubit, preparing the superposition state
-        <strong>|ψ⟩ = 1/√2 (|0⟩ + |1⟩)</strong>.
-        Measured on a <strong>real IBM Quantum processor</strong>, the result is 0 or 1 with
-        exactly 50% probability each (Born rule).
-        In this branch you get A or B — your counterpart in the other branch gets the opposite.
-      </p>
-    </div>
-  </div>
+<div class="container">
 
   <!-- main card -->
   <div class="card">
-    <span class="stk sk1">⚛️</span>
-    <span class="stk sk2">🔭</span>
-    <span class="stk sk3">🧬</span>
 
-    <!-- qubit orb -->
-    <div class="orb-wrap">
-      <svg class="orb-svg" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- outer glow -->
-        <circle cx="55" cy="55" r="52" fill="none" stroke="#e8f0ff" stroke-width="4"/>
-        <!-- ring 1 — blue horizontal orbit -->
-        <g class="ring1">
-          <ellipse cx="55" cy="55" rx="50" ry="16" fill="none" stroke="#2979ff" stroke-width="1.5" opacity=".45" stroke-dasharray="4 3"/>
-          <circle cx="105" cy="55" r="4.5" fill="#2979ff"/>
-        </g>
-        <!-- ring 2 — pink tilted orbit -->
-        <g class="ring2">
-          <ellipse cx="55" cy="55" rx="50" ry="16" fill="none" stroke="#ff2d78" stroke-width="1.5" opacity=".45" stroke-dasharray="4 3" transform="rotate(60 55 55)"/>
-          <circle cx="105" cy="55" r="4.5" fill="#ff2d78" transform="rotate(60 55 55)"/>
-        </g>
-        <!-- ring 3 — purple tilted orbit -->
-        <g class="ring3">
-          <ellipse cx="55" cy="55" rx="50" ry="16" fill="none" stroke="#d500f9" stroke-width="1.5" opacity=".35" stroke-dasharray="4 3" transform="rotate(-60 55 55)"/>
-          <circle cx="105" cy="55" r="4.5" fill="#d500f9" transform="rotate(-60 55 55)"/>
-        </g>
-        <!-- core sphere -->
-        <g class="orb-core">
-          <circle cx="55" cy="55" r="28" fill="white" stroke="#1a1a1a" stroke-width="2.5"/>
-          <text x="55" y="51" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" font-weight="700" fill="#aaa">qubit</text>
-          <text x="55" y="65" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" font-weight="700" fill="#1a1a1a">0|1</text>
-        </g>
-      </svg>
-    </div>
+    <div class="title">Schrödinger's <em>Cat</em></div>
+    <div class="tagline">is it alive or dead? — only a quantum chip knows</div>
 
-    <h1>EVERETT'S BIFURCATION</h1>
-    <p class="sub">MWI · Everett (1957) · gate H · |ψ⟩ = 1/√2 (|0⟩ + |1⟩) · IBM Quantum</p>
-
-    <!-- options -->
-    <div class="options">
-      <div class="opt opt-a">
-        <div class="opt-tag">🅰 Option A</div>
-        <input id="optA" type="text" placeholder="e.g. pizza" maxlength="36"/>
+    <!-- idle state -->
+    <div id="idle">
+      <div class="box-wrap" onclick="go()">
+        <svg class="box-svg" viewBox="0 0 180 165" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- body -->
+          <rect x="18" y="68" width="144" height="90" rx="10" fill="white" stroke="#1c1917" stroke-width="3"/>
+          <!-- seam -->
+          <line x1="90" y1="68" x2="90" y2="158" stroke="#ede8e0" stroke-width="2.5"/>
+          <!-- lid group (ears + lid wobble together) -->
+          <g class="box-lid">
+            <!-- left ear outer -->
+            <polygon points="36,52 20,6 64,46" fill="#f59e0b" stroke="#1c1917" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- left ear inner (pink) -->
+            <polygon points="39,47 28,14 57,43" fill="#fb7185"/>
+            <!-- right ear outer -->
+            <polygon points="144,52 160,6 116,46" fill="#f59e0b" stroke="#1c1917" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- right ear inner (pink) -->
+            <polygon points="141,47 152,14 123,43" fill="#fb7185"/>
+            <!-- lid rect -->
+            <rect x="14" y="46" width="152" height="26" rx="7" fill="#f59e0b" stroke="#1c1917" stroke-width="3"/>
+            <!-- handle knob -->
+            <rect x="72" y="34" width="36" height="16" rx="5" fill="#f59e0b" stroke="#1c1917" stroke-width="2.5"/>
+          </g>
+          <!-- question marks inside box -->
+          <text class="q1" x="30" y="126" font-family="Space Mono,monospace" font-size="40" fill="#ddd5c8">?</text>
+          <text class="q2" x="104" y="132" font-family="Space Mono,monospace" font-size="30" fill="#e5ddd5">?</text>
+        </svg>
       </div>
-      <div class="vs-badge">VS</div>
-      <div class="opt opt-b">
-        <div class="opt-tag">🅱 Option B</div>
-        <input id="optB" type="text" placeholder="e.g. ramen" maxlength="36"/>
+      <button class="btn" onclick="go()">Open the box</button>
+    </div>
+
+    <!-- loading state -->
+    <div class="loading" id="loading">
+      <div class="step-track">
+        <div class="s-dot" id="sd1"></div><div class="s-line" id="sl1"></div>
+        <div class="s-dot" id="sd2"></div><div class="s-line" id="sl2"></div>
+        <div class="s-dot" id="sd3"></div><div class="s-line" id="sl3"></div>
+        <div class="s-dot" id="sd4"></div><div class="s-line" id="sl4"></div>
+        <div class="s-dot" id="sd5"></div>
       </div>
+      <div class="step-labels">
+        <span>Connect</span><span>Find chip</span><span>Circuit</span><span>Queue</span><span>Measure</span>
+      </div>
+      <div class="chip-info" id="chipInfo">
+        <div class="chip-badge" id="chipName">🖥️ <span id="chipNameVal">—</span></div>
+        <div class="chip-badge queue-badge" id="chipQueue">⏳ <span id="chipQueueVal">—</span></div>
+      </div>
+      <div class="load-status" id="loadStatus">Starting…</div>
+      <div class="elapsed-row">
+        <span>⏱</span><span class="elapsed-val" id="elapsed">0s</span><span>elapsed</span>
+      </div>
+      <div class="queue-note" id="queueNote">
+        <strong>🐱 The cat is waiting in line.</strong><br>
+        IBM Quantum's chip is real hardware shared with users worldwide — your job is queued. This can take anywhere from a few seconds to several minutes. Until it's done, the cat remains simultaneously alive and dead.
+      </div>
+      <div class="mini-log" id="miniLog"></div>
     </div>
-
-    <div class="btn-row">
-      <button id="runBtn" onclick="go()">⚡ RUN THE QUANTUM MEASUREMENT</button>
-    </div>
-
-    <!-- steps -->
-    <div class="steps" id="steps">
-      <div class="step" id="s1"><div class="step-bub">🔑</div><div class="step-lbl">Connect</div></div>
-      <div class="step-line" id="l1"></div>
-      <div class="step" id="s2"><div class="step-bub">🖥️</div><div class="step-lbl">Find chip</div></div>
-      <div class="step-line" id="l2"></div>
-      <div class="step" id="s3"><div class="step-bub">⚛️</div><div class="step-lbl">Superpose</div></div>
-      <div class="step-line" id="l3"></div>
-      <div class="step" id="s4"><div class="step-bub">🚀</div><div class="step-lbl">Run</div></div>
-      <div class="step-line" id="l4"></div>
-      <div class="step" id="s5"><div class="step-bub">🎯</div><div class="step-lbl">Measure</div></div>
-    </div>
-
-    <!-- status bar -->
-    <div class="sbar" id="sbar">
-      <div class="sdot"></div>
-      <span id="stxt">Starting…</span>
-    </div>
-
-    <!-- log -->
-    <div class="log" id="log"></div>
 
     <!-- result -->
     <div class="result" id="result">
-
-      <div class="split-header">
-        <div class="split-title">⚛️ Branching complete — Everett's MWI in action.</div>
-        <div class="split-sub" id="split-sub"></div>
-      </div>
-
-      <!-- fork visual -->
-      <div class="fork-wrap">
-        <svg class="fork-svg" viewBox="0 0 120 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- stem -->
-          <line x1="60" y1="0" x2="60" y2="22" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round"/>
-          <!-- fork left -->
-          <path d="M60 22 Q60 36 22 48" stroke="#ff2d78" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <!-- fork right -->
-          <path d="M60 22 Q60 36 98 48" stroke="#2979ff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <!-- dots -->
-          <circle cx="60" cy="22" r="4" fill="#1a1a1a"/>
-          <circle cx="22" cy="48" r="5" fill="#ff2d78"/>
-          <circle cx="98" cy="48" r="5" fill="#2979ff"/>
-          <!-- labels -->
-          <text x="2" y="56" font-family="Space Mono, monospace" font-size="7" fill="#ff2d78" font-weight="700">ramo |0⟩</text>
-          <text x="76" y="56" font-family="Space Mono, monospace" font-size="7" fill="#2979ff" font-weight="700">ramo |1⟩</text>
-        </svg>
-      </div>
-
-      <div class="universes">
-        <div class="uni here">
-          <div class="uni-tag">🌟 This branch</div>
-          <div class="uni-qubit" id="qubitHere"></div>
-          <div class="uni-name" id="nameHere"></div>
-          <div class="uni-desc">The branch where your observed state lives.</div>
-        </div>
-        <div class="uni there">
-          <div class="uni-tag">👻 Complementary branch</div>
-          <div class="uni-qubit" id="qubitThere"></div>
-          <div class="uni-name" id="nameThere"></div>
-          <div class="uni-desc">Your counterpart here observed the complementary outcome.</div>
-        </div>
-      </div>
-
-      <div class="qubit-note" id="qnote"></div>
+      <div class="cat-emoji" id="catEmoji"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="verdict-note" id="verdictNote"></div>
+      <button class="again-btn" onclick="reset()">Try again</button>
     </div>
 
-    <div class="err" id="err"></div>
+    <!-- error -->
+    <div class="err-msg" id="errMsg"></div>
 
   </div>
+
+  <!-- explanation card -->
+  <div class="explanation">
+    <div class="exp-label">How it works</div>
+    <div class="exp-body">
+      <p>In 1935, <strong>Erwin Schrödinger</strong> described a paradox: a cat in a sealed box is simultaneously <strong>alive and dead</strong> until observed. A radioactive atom inside is in quantum superposition — decayed and undecayed at once — and only collapses to one state when measured.</p>
+      <p>When you click the button, we run a <strong>real quantum circuit</strong> on an IBM Quantum processor. A <strong>Hadamard gate</strong> puts a qubit into perfect superposition: <strong>|ψ⟩ = 1/√2 (|0⟩ + |1⟩)</strong>. Measuring it collapses the wave function. <strong>|0⟩ = alive, |1⟩ = dead</strong> — exactly 50/50, guaranteed by physics.</p>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  // confetti
-  const clrs = ['#ff2d78','#ffd600','#2979ff','#00c853','#d500f9','#ff6d00'];
+  // ── background floaters ────────────────────────────────────────
   const bgEl = document.getElementById('bg');
-  for (let i = 0; i < 32; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot';
-    const sz = 5 + Math.random() * 12;
-    d.style.cssText = `
-      width:${sz}px;height:${sz}px;
-      left:${Math.random()*100}vw;
-      background:${clrs[Math.floor(Math.random()*clrs.length)]};
-      animation-duration:${10+Math.random()*18}s;
-      animation-delay:${-Math.random()*26}s;
-      border-radius:${Math.random()>.35?'50%':'4px'};
-    `;
-    bgEl.appendChild(d);
+  const symbols = ['🐾','❓','🐾','❓','🐱','❓','🐾','✨'];
+  for (let i = 0; i < 24; i++) {
+    const f = document.createElement('div');
+    f.className = 'floater';
+    f.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    f.style.cssText = `left:${Math.random()*100}vw;font-size:${10+Math.random()*12}px;animation-duration:${15+Math.random()*20}s;animation-delay:${-Math.random()*32}s;`;
+    bgEl.appendChild(f);
   }
 
-  const STEP_MSG = [null,
-    'Authenticating with IBM Quantum…',
-    'Selecting the least busy backend…',
-    'Preparing state |ψ⟩ = 1/√2 (|0⟩ + |1⟩) via Hadamard gate…',
-    'Transpiling and running on real QPU…',
-    'Projective measurement — applying Born rule…',
-  ];
-  const STEP_ICONS = ['🔑','🖥️','⚛️','🚀','🎯'];
+  let timer = null, elapsedTimer = null, rendered = 0, curStep = 0, startTime = null;
+  const $ = id => document.getElementById(id);
 
-  let timer=null, rendered=0, typing=null, curStep=0;
-  const $= id => document.getElementById(id);
+  // ── elapsed ────────────────────────────────────────────────────
+  function startElapsed() {
+    startTime = Date.now();
+    $('elapsed').textContent = '0s';
+    elapsedTimer = setInterval(() => {
+      const secs = Math.floor((Date.now() - startTime) / 1000);
+      const m = Math.floor(secs / 60), s = secs % 60;
+      $('elapsed').textContent = m > 0 ? `${m}m ${s}s` : `${s}s`;
+    }, 1000);
+  }
+  function stopElapsed() { if (elapsedTimer) { clearInterval(elapsedTimer); elapsedTimer = null; } }
 
-  function setStep(n) {
+  // ── step tracker ───────────────────────────────────────────────
+  function updateStep(n) {
     if (n <= curStep) return;
-    for (let i=curStep; i<n; i++) {
-      const s=$('s'+i); if(s){s.classList.remove('active');s.classList.add('done');s.querySelector('.step-bub').textContent='✓';}
-      const l=$('l'+i); if(l) l.classList.add('done');
+    curStep = n;
+    for (let i = 1; i <= 5; i++) {
+      const d = $('sd' + i); if (!d) continue;
+      d.classList.remove('done', 'active');
+      if (i < n)       d.classList.add('done');
+      else if (i === n) d.classList.add('active');
+      const l = $('sl' + i); if (l) l.classList.toggle('done', i < n);
     }
-    curStep=n;
-    const el=$('s'+n);
-    if(el){el.classList.remove('done');el.classList.add('active');}
-    if(STEP_MSG[n]) $('stxt').textContent=STEP_MSG[n];
+    $('queueNote').classList.toggle('on', n >= 4);
   }
 
+  // ── log ────────────────────────────────────────────────────────
+  function addLogRow(e) {
+    const ml = $('miniLog');
+    const row = document.createElement('div');
+    row.className = 'ml-row' + (e.kind !== 'info' ? ' ' + e.kind : '');
+    row.innerHTML = `<span class="ml-time">${e.time}</span><span class="ml-msg">${e.msg}</span>`;
+    ml.appendChild(row);
+    ml.scrollTop = ml.scrollHeight;
+    $('loadStatus').textContent = e.msg;
+
+    // "Found 'ibm_sherbrooke' — 12 jobs currently in queue."
+    const foundMatch = e.msg.match(/Found '([^']+)' — (\d+) jobs/);
+    if (foundMatch) {
+      $('chipNameVal').textContent = foundMatch[1];
+      $('chipQueueVal').textContent = `${foundMatch[2]} jobs in queue`;
+      $('chipInfo').classList.add('on');
+    }
+
+    // "N jobs ahead of us in queue…"
+    const posMatch = e.msg.match(/^(\d+) jobs? ahead/);
+    if (posMatch) {
+      $('chipQueueVal').textContent = `${posMatch[1]} jobs ahead`;
+    }
+
+    // Job started running
+    if (e.msg.includes('running on the chip')) {
+      $('chipQueueVal').textContent = 'running now';
+      $('chipQueue').style.borderColor = 'var(--green)';
+      $('chipQueue').style.boxShadow = '3px 3px 0 var(--green)';
+      $('chipQueue').style.color = 'var(--green)';
+      $('chipQueue').style.background = '#f0fdf4';
+    }
+  }
+
+  function renderLogs(logs) {
+    for (let i = rendered; i < logs.length; i++) {
+      const e = logs[i];
+      if (e.step) updateStep(e.step);
+      addLogRow(e);
+    }
+    rendered = logs.length;
+  }
+
+  // ── confetti ───────────────────────────────────────────────────
+  function spawnConfetti() {
+    const cols = ['#f59e0b','#16a34a','#7c3aed','#ec4899','#0ea5e9','#f97316','#84cc16'];
+    for (let i = 0; i < 70; i++) {
+      const p = document.createElement('div');
+      p.className = 'confetti-piece';
+      const w = 6 + Math.random() * 8, h = w * (Math.random() > .5 ? 1 : .4);
+      p.style.cssText = `left:${5+Math.random()*90}vw;top:-10px;width:${w}px;height:${h}px;background:${cols[i%cols.length]};border-radius:${Math.random()>.4?'50%':'2px'};animation-duration:${1.4+Math.random()*1.8}s;animation-delay:${Math.random()*.7}s;`;
+      document.body.appendChild(p);
+      p.addEventListener('animationend', () => p.remove());
+    }
+  }
+
+  // ── reset ──────────────────────────────────────────────────────
   function reset() {
-    rendered=0; curStep=0; typing=null;
-    $('log').innerHTML=''; $('log').classList.remove('on');
-    $('steps').classList.remove('on');
-    $('sbar').classList.remove('on');
+    if (timer) { clearInterval(timer); timer = null; }
+    stopElapsed();
+    rendered = 0; curStep = 0;
+    $('idle').style.display = '';
+    $('loading').classList.remove('on');
     $('result').classList.remove('on');
-    $('err').classList.remove('on'); $('err').textContent='';
-    for(let i=1;i<=5;i++){
-      const s=$('s'+i); if(s){s.className='step';s.querySelector('.step-bub').textContent=STEP_ICONS[i-1];}
-      const l=$('l'+i); if(l) l.classList.remove('done');
+    $('errMsg').classList.remove('on');
+    $('errMsg').textContent = '';
+    $('miniLog').innerHTML = '';
+    $('loadStatus').textContent = 'Starting…';
+    $('elapsed').textContent = '0s';
+    $('queueNote').classList.remove('on');
+    $('chipInfo').classList.remove('on');
+    $('chipNameVal').textContent = '—';
+    $('chipQueueVal').textContent = '—';
+    const cq = $('chipQueue');
+    cq.style.borderColor = ''; cq.style.boxShadow = ''; cq.style.color = ''; cq.style.background = '';
+    for (let i = 1; i <= 5; i++) {
+      const d = $('sd' + i); if (d) d.classList.remove('done', 'active');
+      const l = $('sl' + i); if (l) l.classList.remove('done');
     }
   }
 
-  function addTyping(){
-    const d=document.createElement('div'); d.className='typing';
-    d.innerHTML='<span></span><span></span><span></span>';
-    $('log').appendChild(d); $('log').scrollTop=$('log').scrollHeight; typing=d;
-  }
-  function rmTyping(){ if(typing&&typing.parentNode) typing.parentNode.removeChild(typing); typing=null; }
-
-  function addLog(e){
-    rmTyping();
-    const row=document.createElement('div');
-    row.className='le'+(e.kind!=='info'?' '+e.kind:'');
-    const t=document.createElement('span'); t.className='lt'; t.textContent=e.time;
-    const m=document.createElement('span'); m.className='lm'; m.textContent=e.msg;
-    row.appendChild(t); row.appendChild(m);
-    $('log').appendChild(row); addTyping(); $('log').scrollTop=$('log').scrollHeight;
+  function showError(msg) {
+    stopElapsed();
+    $('loading').classList.remove('on');
+    $('idle').style.display = '';
+    $('errMsg').textContent = msg;
+    $('errMsg').classList.add('on');
   }
 
-  function renderLogs(logs){
-    for(let i=rendered;i<logs.length;i++){
-      const e=logs[i]; if(e.step) setStep(e.step); addLog(e);
-    }
-    rendered=logs.length;
-  }
-
-  async function go(){
-    if(timer) clearInterval(timer);
+  // ── go ─────────────────────────────────────────────────────────
+  async function go() {
+    if (timer) return;
     reset();
-    $('runBtn').disabled=true;
-    $('steps').classList.add('on');
-    $('sbar').classList.add('on');
-    $('log').classList.add('on');
-    addTyping();
-
-    const a=$('optA').value.trim()||'A';
-    const b=$('optB').value.trim()||'B';
+    $('idle').style.display = 'none';
+    $('loading').classList.add('on');
+    startElapsed();
 
     let jobId;
-    try{
-      const res=await fetch('/run',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({a,b})});
-      jobId=(await res.json()).job_id;
-    }catch(e){
-      rmTyping(); addLog({time:now(),msg:'Connection error: '+e.message,kind:'error'});
-      $('runBtn').disabled=false; return;
+    try {
+      const res = await fetch('/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ a: 'alive', b: 'dead' }),
+      });
+      jobId = (await res.json()).job_id;
+    } catch (e) {
+      showError('Connection error: ' + e.message); return;
     }
 
-    timer=setInterval(async()=>{
-      try{
-        const data=await(await fetch('/status/'+jobId)).json();
-        renderLogs(data.logs||[]);
+    timer = setInterval(async () => {
+      try {
+        const data = await (await fetch('/status/' + jobId)).json();
+        renderLogs(data.logs || []);
 
-        if(data.status==='done'){
-          clearInterval(timer); rmTyping(); $('runBtn').disabled=false;
-          $('sbar').classList.remove('on');
-          for(let i=curStep;i<=5;i++) setStep(i);
-
-          const isZero=data.result==='0';
-          const optA=data.option_a||'A';
-          const optB=data.option_b||'B';
-
-          $('nameHere').textContent  = isZero ? optA : optB;
-          $('nameThere').textContent = isZero ? optB : optA;
-          const other = data.result==='0'?'1':'0';
-          $('qubitHere').textContent  = `|${data.result}⟩ — this branch`;
-          $('qubitThere').textContent = `|${other}⟩ — complementary branch`;
-          $('split-sub').textContent  = `projective measurement: |ψ⟩ → |${data.result}⟩ · complementary branch |${other}⟩ exists per Everett's MWI`;
-          $('qnote').textContent = 'IBM Quantum QPU · Hadamard gate · Born rule P(0)=P(1)=0.5 · environmental decoherence negligible at operating temperature';
+        if (data.status === 'done') {
+          clearInterval(timer); timer = null; stopElapsed();
+          $('loading').classList.remove('on');
+          const alive = data.result === '0';
+          if (alive) spawnConfetti();
+          $('catEmoji').textContent    = alive ? '🐱' : '💀';
+          $('verdict').textContent     = alive ? 'Alive!' : 'Dead.';
+          $('verdict').className       = 'verdict ' + (alive ? 'alive' : 'dead');
+          $('verdictNote').textContent = `qubit collapsed to |${data.result}⟩ on IBM Quantum · P(alive) = P(dead) = 0.5`;
           $('result').classList.add('on');
 
-        }else if(data.status==='error'){
-          clearInterval(timer); rmTyping(); $('runBtn').disabled=false;
-          $('sbar').classList.remove('on');
-          $('err').textContent='⚠️ Something went wrong: '+data.result;
-          $('err').classList.add('on');
+        } else if (data.status === 'error') {
+          clearInterval(timer); timer = null;
+          showError('The experiment failed: ' + data.result);
         }
-      }catch(e){
-        clearInterval(timer); rmTyping();
-        addLog({time:now(),msg:'Lost connection to server.',kind:'error'});
-        $('runBtn').disabled=false;
+      } catch (e) {
+        clearInterval(timer); timer = null;
+        showError('Lost connection to the laboratory.');
       }
-    },1500);
+    }, 1500);
   }
-
-  function now(){return new Date().toTimeString().slice(0,8);}
 </script>
 </body>
 </html>
